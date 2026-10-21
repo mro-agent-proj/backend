@@ -28,10 +28,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.RabbitMQContainer;
+import org.testcontainers.utility.DockerImageName;
 
 /**
  * Postgres·RabbitMQ는 Testcontainers로 띄웁니다 (Docker 필요).
- * Postgres만 외부 DB를 쓰려면 TEST_DB_URL(+TEST_DB_USERNAME/PASSWORD)을 지정하세요.
+ * Postgres만 외부 DB를 쓰려면 TEST_DB_URL(+TEST_DB_USERNAME/PASSWORD)을 지정하세요 (pgvector 확장 필요).
  * AI 서버는 없고, 테스트가 mro.agent.events 큐에 직접 이벤트를 발행합니다.
  */
 @SpringBootTest
@@ -48,7 +49,8 @@ public abstract class IntegrationTestSupport {
 
     static {
         if (System.getenv("TEST_DB_URL") == null) {
-            POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine");
+            POSTGRES = new PostgreSQLContainer<>(DockerImageName.parse("pgvector/pgvector:0.8.2-pg16")
+                    .asCompatibleSubstituteFor("postgres"));
             POSTGRES.start();
         } else {
             POSTGRES = null;

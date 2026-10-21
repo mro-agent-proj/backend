@@ -1,0 +1,54 @@
+package com.skala.mro;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
+
+/** Flyway V3(RAG 테이블)·V4(MCP 조회 전용 계정)가 의도한 범위로 적용됐는지 확인합니다. */
+class DatabaseSchemaTest extends IntegrationTestSupport {
+
+    private boolean canSelect(String role, String table) {
+        return Boolean.TRUE.equals(jdbc.queryForObject("select has_table_privilege(?, ?, 'SELECT')",
+                Boolean.class, role, table));
+    }
+
+    @Test
+    void RAG_테이블과_pgvector가_생성된다() {
+        assertThat(jdbc.queryForObject("select count(*) from pg_extension where extname = 'vector'", Integer.class))
+                .isEqualTo(1);
+        for (String table : new String[]{"public.knowledge_releases", "public.jasc_codes", "public.sdr_cases",
+                "public.amm_references", "public.evidence", "public.rag_request_contexts", "rag.amm_embeddings"}) {
+            assertThat(jdbc.queryForObject("select to_regclass(?) is not null", Boolean.class, table))
+                    .as(table).isTrue();
+        }
+    }
+
+    @Test
+    void rag_mcp_계정은_RAG_테이블만_읽는다() {
+        assertThat(canSelect("mro_reader", "public.sdr_cases")).isTrue();
+        assertThat(canSelect("mro_reader", "rag.amm_embeddings")).isTrue();
+        assertThat(canSelect("mro_reader", "public.users")).isFalse();
+        assertThat(canSelect("mro_reader", "public.repair_requests")).isFalse();
+        assertThat(canSelect("mro_reader", "public.maintenance_history")).isFalse();
+    }
+
+    @Test
+    void business_mcp_계정은_기체_수리이력_부서만_읽는다() {
+        assertThat(canSelect("mro_business_reader", "public.aircraft")).isTrue();
+        assertThat(canSelect("mro_business_reader", "public.maintenance_history")).isTrue();
+        assertThat(canSelect("mro_business_reader", "public.departments")).isTrue();
+        assertThat(canSelect("mro_business_reader", "public.users")).isFalse();
+        assertThat(canSelect("mro_business_reader", "public.repair_requests")).isFalse();
+        assertThat(canSelect("mro_business_reader", "public.sdr_cases")).isFalse();
+    }
+
+    @Test
+    void 조회_전용_계정은_쓰기_권한이_없다() {
+        for (String role : new String[]{"mro_reader", "mro_business_reader"}) {
+            assertThat(jdbc.queryForObject("""
+                    select count(*) from information_schema.role_table_grants
+                    where grantee = ? and privilege_type in ('INSERT', 'UPDATE', 'DELETE', 'TRUNCATE')""",
+                    Integer.class, role)).as(role).isZero();
+        }
+    }
+}
