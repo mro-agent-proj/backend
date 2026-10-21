@@ -25,6 +25,7 @@ docker compose up -d postgres rabbitmq
 - RabbitMQ 관리 UI: http://localhost:15672 (DLQ 메시지 확인·재전송)
 - 헬스: http://localhost:8080/actuator/health — `ragData`가 `UNKNOWN`이면 RAG 데이터 복원 전
 - 시드 계정 비밀번호는 모두 `test1234` (`seed/users.csv` 참고)
+- 신고자는 `POST /api/v1/auth/signup`(email, password 8자 이상, name, airline_code)으로 직접 가입하고 바로 로그인 토큰을 받습니다. 정비팀·어드민 계정은 시드로만 만듭니다. 가입 화면용 항공사 목록 `GET /api/v1/airlines`는 인증 없이 열려 있습니다
 - 처음부터 다시 하려면 `docker compose down -v` (DB·큐 데이터 삭제)
 - 시드 CSV(`seed/`)는 임시 데이터입니다. 수리이력은 경님, 계정은 주영님 데이터로 교체 예정
 - 실제 AI 서버를 붙일 때는 `AI_MODE=rabbit docker compose up -d --build` (기본 `mock`이면 앱 안의 가짜 AI 서버가 실행 요청을 가져감)
@@ -84,9 +85,9 @@ mro.agent.dlx      ── run.dead      ──▶ mro.agent.run.dlq     Spring�
 ```
 com.skala.mro
 ├── domain
-│   ├── auth        로그인, 내 정보
-│   ├── user        계정 엔티티 (생성은 시드로만)
-│   ├── master      기체·부서 마스터, 부서 목록 API
+│   ├── auth        로그인, 신고자 가입, 내 정보
+│   ├── user        계정 엔티티 (신고자는 가입 API, 정비팀·어드민은 시드)
+│   ├── master      기체·부서·항공사 마스터, 부서·항공사 목록 API
 │   ├── request     수리 요청, 상태 머신, 접수 확인, 행 단위 권한
 │   ├── agent       RabbitMQ 발행·소비(messaging), DLQ 처리, 이벤트 반영, 시간 초과 감시 (+ messaging, config)
 │   ├── assignment  정비팀 대기함, 수락·거절

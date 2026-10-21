@@ -34,6 +34,55 @@ class AuthAndAccessTest extends IntegrationTestSupport {
     }
 
     @Test
+    void 가입하면_신고자로_바로_로그인되고_이후_로그인도_된다() throws Exception {
+        mvc.perform(post("/api/v1/auth/signup").contentType(MediaType.APPLICATION_JSON)
+                        .content(json(Map.of("email", "New@KAL.test", "password", "password1",
+                                "name", "새 신고자", "airline_code", "kal"))))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.access_token").isNotEmpty())
+                .andExpect(jsonPath("$.user.email").value("new@kal.test"))
+                .andExpect(jsonPath("$.user.role").value("REPORTER"))
+                .andExpect(jsonPath("$.user.airline_code").value("KAL"))
+                .andExpect(jsonPath("$.user.department_code").doesNotExist());
+        mvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content(json(Map.of("email", "new@kal.test", "password", "password1"))))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void 가입_이메일이_이미_있으면_409() throws Exception {
+        mvc.perform(post("/api/v1/auth/signup").contentType(MediaType.APPLICATION_JSON)
+                        .content(json(Map.of("email", "Reporter@KAL.test", "password", "password1",
+                                "name", "중복", "airline_code", "KAL"))))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.error.code").value("DUPLICATE_EMAIL"));
+    }
+
+    @Test
+    void 가입_입력이_잘못되면_400() throws Exception {
+        mvc.perform(post("/api/v1/auth/signup").contentType(MediaType.APPLICATION_JSON)
+                        .content(json(Map.of("email", "x@kal.test", "password", "password1",
+                                "name", "없는 항공사", "airline_code", "ZZZ"))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error.details[0].field").value("airline_code"));
+        mvc.perform(post("/api/v1/auth/signup").contentType(MediaType.APPLICATION_JSON)
+                        .content(json(Map.of("email", "not-an-email", "password", "short",
+                                "name", "형식 오류", "airline_code", "KAL"))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error.code").value("VALIDATION_ERROR"))
+                .andExpect(jsonPath("$.error.details", hasSize(2)));
+    }
+
+    @Test
+    void 항공사_목록은_인증_없이_조회된다() throws Exception {
+        mvc.perform(get("/api/v1/airlines"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].code").value("AAR"))
+                .andExpect(jsonPath("$[0].name").value("아시아나항공"));
+    }
+
+    @Test
     void 토큰이_없거나_잘못되면_401() throws Exception {
         mvc.perform(get("/api/v1/me"))
                 .andExpect(status().isUnauthorized())

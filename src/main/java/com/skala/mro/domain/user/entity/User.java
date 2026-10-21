@@ -11,7 +11,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/** 계정은 시드(SeedLoader)로만 만듭니다. 가입 API는 범위 밖입니다. */
+/** 신고자는 가입 API(AuthService.signup)로, 정비팀·어드민은 시드(SeedLoader)로만 만듭니다. */
 @Entity
 @Table(name = "users")
 @Getter
@@ -37,4 +37,17 @@ public class User {
     private boolean active;
 
     private Instant createdAt;
+
+    public static User reporter(String email, String name, String passwordHash, String airlineCode) {
+        User user = new User();
+        user.id = UUID.randomUUID();
+        user.email = email;
+        user.name = name;
+        user.passwordHash = passwordHash;
+        user.role = Role.REPORTER;
+        user.airlineCode = airlineCode;
+        user.active = true;
+        user.createdAt = Instant.now();
+        return user;
+    }
 }
