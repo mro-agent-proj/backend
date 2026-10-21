@@ -8,7 +8,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** 배정 실행 직전 근거 ID 검증 (MH-*: 수리이력, EV-*: RAG evidence). */
+/** 배정 실행 직전 근거 ID 검증 (MH-*: 수리이력, EV-SDR·AMM: RAG evidence, EV-DOC: R04 기술자료). */
 class EvidenceValidationTest extends IntegrationTestSupport {
 
     private static final UUID RELEASE = UUID.fromString("00000000-0000-0000-0000-00000000aa01");
@@ -39,6 +39,16 @@ class EvidenceValidationTest extends IntegrationTestSupport {
         evidence("EV-SDR-TEST1", "sdr", SDR_A320_214, null);
         evidence("EV-SDR-OTHER-MODEL", "sdr", SDR_A321, null);
         evidence("EV-AMM-TEST1", "derived_amm_reference", SDR_A320_214, AMM_REF);
+        jdbc.update("""
+                insert into tech_documents (document_id, title, url, published, category, ata_chapters, departments,
+                  applicability_status, configuration_conditions, source_version, pdf_sha256, body_text)
+                values ('DOC-test', 'Dual hydraulic loss', 'https://example.com/a.pdf', 'June 2007', 'maintenance',
+                  '{29}', '{HYD}', 'supported', '{}', 'tech-v1', 'sha', 'HYDRAULIC LEAK CHECK')""");
+        jdbc.update("""
+                insert into tech_chunks (chunk_id, document_id, evidence_id, evidence_group_id, section, text,
+                  start_offset, end_offset, applicability_status, configuration_conditions, embedding_text, content_hash)
+                values ('DOC-test-01', 'DOC-test', 'EV-DOC-0123456789abcdef0123', 'DOC-test', 'Intro',
+                  'HYDRAULIC LEAK', 0, 14, 'supported', '{}', 'Dual hydraulic loss > Intro\nHYDRAULIC LEAK', 'h')""");
     }
 
     private void sdrCase(UUID id, String caseId, String modelKey) {
@@ -76,7 +86,8 @@ class EvidenceValidationTest extends IntegrationTestSupport {
         UUID requestId = completeWith(List.of(
                 Map.of("source", "HISTORY", "ref_id", "MH-000001"),
                 Map.of("source", "SDR", "ref_id", "EV-SDR-TEST1"),
-                Map.of("source", "AMM", "ref_id", "EV-AMM-TEST1")));
+                Map.of("source", "AMM", "ref_id", "EV-AMM-TEST1"),
+                Map.of("source", "DOC", "ref_id", "EV-DOC-0123456789abcdef0123")));
         assertThat(requestStatus(requestId)).isEqualTo("ASSIGNED");
     }
 
@@ -95,6 +106,7 @@ class EvidenceValidationTest extends IntegrationTestSupport {
                 Map.of("source", "HISTORY", "ref_id", "MH-000002"),
                 Map.of("source", "SDR", "ref_id", "EV-SDR-OTHER-MODEL"),
                 Map.of("source", "AMM", "ref_id", "EV-SDR-TEST1"),
+                Map.of("source", "DOC", "ref_id", "EV-DOC-ffffffffffffffffffff"),
                 Map.of("source", "MANUAL", "ref_id", "X-1")));
 
         assertThat(requestStatus(requestId)).isEqualTo("HUMAN_REVIEW");
@@ -102,7 +114,7 @@ class EvidenceValidationTest extends IntegrationTestSupport {
                 requestId)).isEqualTo("VALIDATION_FAILED");
         assertThat(reviewNote(requestId))
                 .contains("HISTORY MH-999999", "HISTORY MH-000002", "SDR EV-SDR-OTHER-MODEL", "AMM EV-SDR-TEST1",
-                        "MANUAL X-1")
+                        "DOC EV-DOC-ffffffffffffffffffff", "MANUAL X-1")
                 .doesNotContain("MH-000001,");
         assertThat(jdbc.queryForObject("select count(*) from assignments", Integer.class)).isZero();
     }

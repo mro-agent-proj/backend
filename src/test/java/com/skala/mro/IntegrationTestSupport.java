@@ -103,7 +103,7 @@ public abstract class IntegrationTestSupport {
         jdbc.execute("""
                 truncate table human_reviews, assignments, agent_assessments, agent_events, request_status_history,
                   repair_requests, users, maintenance_history, aircraft, departments, airlines,
-                  knowledge_releases cascade""");
+                  knowledge_releases, tech_documents cascade""");
         if (passwordHash == null) {
             passwordHash = passwordEncoder.encode(PASSWORD);
         }

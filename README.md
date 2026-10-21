@@ -18,7 +18,7 @@ docker compose logs -f backend   # 로그 확인
 ```bash
 docker compose up -d postgres rabbitmq
 ./gradlew bootRun                # local 프로파일: 빈 DB면 seed/*.csv 적재, 앱 안의 가짜 AI 서버가 큐를 소비
-./scripts/rag-restore.sh         # (다른 터미널에서, 처음 한 번) RAG 데이터 복원. 약 20초
+./scripts/restore-data.sh        # (다른 터미널에서, 처음 한 번) RAG·기술자료 복원. 약 20초
 ```
 
 - Swagger: http://localhost:8080/swagger-ui.html
@@ -29,7 +29,7 @@ docker compose up -d postgres rabbitmq
 - 시드 CSV(`seed/`)는 임시 데이터입니다. 수리이력은 경님, 계정은 주영님 데이터로 교체 예정
 - 실제 AI 서버를 붙일 때는 `AI_MODE=rabbit docker compose up -d --build` (기본 `mock`이면 앱 안의 가짜 AI 서버가 실행 요청을 가져감)
 
-RAG 데이터 전달본(약 124MB)은 git에 없습니다. 팀 공유 드라이브에서 받아 `data/rag/2026-10-21-rag-v1/`에 두세요. 없으면 복원은 경고만 남기고 건너뜁니다. 스크립트는 체크섬·스키마 호환·Flyway 적용 여부를 확인한 뒤, RAG 테이블이 모두 비어 있을 때만 복원하고 `verify.sql`로 내용을 검증합니다. 이미 같은 데이터가 있으면 건너뛰고, 일부만 차 있으면 아무것도 지우지 않고 중단합니다.
+데이터 전달본(RAG 약 124MB, 기술자료 약 1MB)은 git에 없습니다. 팀 공유 드라이브에서 받아 `data/rag/` 아래에 두세요. `scripts/restore-data.sh`가 둘 다 복원하며(compose에서는 `rag-restore` 서비스가 자동 실행), 전달본이 없으면 경고만 남기고 건너뜁니다. 스크립트는 체크섬·스키마 호환·Flyway 적용 여부를 확인한 뒤, RAG 테이블이 모두 비어 있을 때만 복원하고 `verify.sql`로 내용을 검증합니다. 이미 같은 데이터가 있으면 건너뛰고, 일부만 차 있으면 아무것도 지우지 않고 중단합니다.
 
 ### DB와 데이터 (백엔드가 모두 띄움)
 
@@ -40,8 +40,10 @@ DB 구조와 데이터 적재는 백엔드가 책임지고, MCP 서버들은 조
 | Flyway V1·V2 | 업무 테이블 (요청·배정·검토·기체·수리이력 등) |
 | Flyway V3 | RAG 테이블 10개 (세환님 `agent` 저장소 제공 SQL 그대로) |
 | Flyway V4 | 조회 전용 계정 권한: `mro_reader`(rag-mcp, RAG 테이블만), `mro_business_reader`(business-mcp, 기체·수리이력·부서만) |
+| Flyway V5 | R04 기술자료 테이블 3개 (경님 전달본 SQL 그대로), `mro_reader` 읽기 권한 |
 | SeedLoader | 업무 시드 `seed/*.csv` (local 프로파일) |
-| RAG 데이터 | 세환님 전달본(`data/rag/2026-10-21-rag-v1/`, git 제외)을 `scripts/rag-restore.sh`로 복원 (compose에서는 `rag-restore` 서비스가 자동 실행). SDR 71,741건, 근거 107,137건, 임베딩 31,678개 |
+| RAG 데이터 | 세환님 전달본 `data/rag/2026-10-21-rag-v1/` → `scripts/rag-restore.sh`. SDR 71,741건, 근거 107,137건, 임베딩 31,678개 |
+| 기술자료 (R04) | 경님 전달본 `data/rag/mro-tech-handoff-20261021-v1/` → `scripts/tech-restore.sh`. Airbus Safety First 61편, 조각·임베딩 496개 |
 
 조회 전용 계정 비밀번호는 Postgres 볼륨을 처음 만들 때 `docker/postgres/init`이 설정합니다 (`MRO_RAG_READER_PASSWORD`, `MRO_BUSINESS_READER_PASSWORD`, 기본값은 로컬 전용). 이미 볼륨이 있으면 `docker compose down -v` 후 다시 올려야 계정이 생깁니다.
 
