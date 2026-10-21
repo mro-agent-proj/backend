@@ -63,7 +63,7 @@ services:
       retries: 30
       start_period: 20s
 
-  # 백엔드가 Flyway(V1~V4)를 끝낸 뒤 RAG 데이터 전달본을 한 번 복원합니다.
+  # 백엔드가 Flyway(V1~V5)를 끝낸 뒤 RAG(세환님)·기술자료(경님) 전달본을 한 번 복원합니다.
   # data/rag/ 아래에 전달본이 없으면 경고만 남기고 건너뜁니다.
   rag-restore:
     image: pgvector/pgvector:0.8.2-pg16
@@ -81,7 +81,7 @@ services:
       - ./scripts:/work/scripts:ro
       - ./src/main/resources/db/migration:/work/src/main/resources/db/migration:ro
       - ./data:/work/data:ro
-    entrypoint: ["bash", "scripts/rag-restore.sh"]
+    entrypoint: ["bash", "scripts/restore-data.sh"]
     restart: "no"
 
 volumes:

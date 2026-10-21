@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
  *   <li>HISTORY {@code MH-*}: 수리이력에 있고, 그 기체가 요청과 같은 모델 (다른 기체 유사 사례 허용)</li>
  *   <li>SDR {@code EV-SDR-*} / AMM {@code EV-AMM-*}: READY release의 evidence에 있고, 종류가 맞고,
  *       원본 SDR의 model_key가 요청 모델과 같음</li>
+ *   <li>DOC {@code EV-DOC-*}: R04 기술자료 조각(tech_chunks)에 있음. 특정 모델 자료가 아니므로 존재만 확인</li>
  * </ul>
  */
 @Component
@@ -33,6 +34,8 @@ public class EvidenceValidator {
               join knowledge_releases kr on kr.id = e.release_id and kr.state = 'READY'
               join sdr_cases s on s.release_id = e.release_id and s.id = e.sdr_case_uuid
               where e.evidence_id = ? and e.source_type = ? and s.model_key = ?)""";
+
+    private static final String DOC_SQL = "select exists (select 1 from tech_chunks where evidence_id = ?)";
 
     private final JdbcTemplate jdbc;
 
@@ -55,6 +58,7 @@ public class EvidenceValidator {
                 case "HISTORY" -> exists(HISTORY_SQL, refId, aircraftModel);
                 case "SDR" -> exists(RAG_SQL, refId, "sdr", modelKey);
                 case "AMM" -> exists(RAG_SQL, refId, "derived_amm_reference", modelKey);
+                case "DOC" -> exists(DOC_SQL, refId);
                 default -> false;
             };
             if (!valid) {
