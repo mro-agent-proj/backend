@@ -44,6 +44,10 @@ management:
     web:
       exposure:
         include: health
+  endpoint:
+    health:
+      # 항목별 상태(db, rabbit, ragData)만 공개하고 세부 정보는 숨깁니다.
+      show-components: always
 
 mro:
   jwt:

@@ -6,19 +6,30 @@
 
 ## 실행
 
+**팀원 (Java 없이 전체 실행)**
+
 ```bash
-docker compose up -d          # Postgres 16 + pgvector (5432), RabbitMQ 4.1 (5672, 관리 UI 15672) — 계정 mro/mro
-./gradlew bootRun             # local 프로파일: 빈 DB면 seed/*.csv 적재, 앱 안의 가짜 AI 서버가 큐를 소비
-./scripts/rag-restore.sh      # (다른 터미널에서, 처음 한 번) RAG 데이터 복원. 약 20초
+docker compose up -d --build     # Postgres + RabbitMQ + 백엔드 + RAG 데이터 복원 (첫 빌드 1~2분)
+docker compose logs -f backend   # 로그 확인
 ```
 
-RAG 데이터 전달본(약 124MB)은 git에 없습니다. 팀 공유 드라이브에서 받아 `data/rag/2026-10-21-rag-v1/`에 두세요. 스크립트는 체크섬·스키마 호환·Flyway 적용 여부를 확인한 뒤, RAG 테이블이 모두 비어 있을 때만 복원하고 `verify.sql`로 내용을 검증합니다. 이미 같은 데이터가 있으면 건너뛰고, 일부만 차 있으면 아무것도 지우지 않고 중단합니다.
+**백엔드 개발 (코드 수정하며 실행)**
+
+```bash
+docker compose up -d postgres rabbitmq
+./gradlew bootRun                # local 프로파일: 빈 DB면 seed/*.csv 적재, 앱 안의 가짜 AI 서버가 큐를 소비
+./scripts/rag-restore.sh         # (다른 터미널에서, 처음 한 번) RAG 데이터 복원. 약 20초
+```
 
 - Swagger: http://localhost:8080/swagger-ui.html
 - RabbitMQ 관리 UI: http://localhost:15672 (DLQ 메시지 확인·재전송)
+- 헬스: http://localhost:8080/actuator/health — `ragData`가 `UNKNOWN`이면 RAG 데이터 복원 전
 - 시드 계정 비밀번호는 모두 `test1234` (`seed/users.csv` 참고)
-- 시드를 다시 넣으려면 `docker compose down -v` 후 다시 실행
+- 처음부터 다시 하려면 `docker compose down -v` (DB·큐 데이터 삭제)
 - 시드 CSV(`seed/`)는 임시 데이터입니다. 수리이력은 경님, 계정은 주영님 데이터로 교체 예정
+- 실제 AI 서버를 붙일 때는 `AI_MODE=rabbit docker compose up -d --build` (기본 `mock`이면 앱 안의 가짜 AI 서버가 실행 요청을 가져감)
+
+RAG 데이터 전달본(약 124MB)은 git에 없습니다. 팀 공유 드라이브에서 받아 `data/rag/2026-10-21-rag-v1/`에 두세요. 없으면 복원은 경고만 남기고 건너뜁니다. 스크립트는 체크섬·스키마 호환·Flyway 적용 여부를 확인한 뒤, RAG 테이블이 모두 비어 있을 때만 복원하고 `verify.sql`로 내용을 검증합니다. 이미 같은 데이터가 있으면 건너뛰고, 일부만 차 있으면 아무것도 지우지 않고 중단합니다.
 
 ### DB와 데이터 (백엔드가 모두 띄움)
 
@@ -30,7 +41,7 @@ DB 구조와 데이터 적재는 백엔드가 책임지고, MCP 서버들은 조
 | Flyway V3 | RAG 테이블 10개 (세환님 `agent` 저장소 제공 SQL 그대로) |
 | Flyway V4 | 조회 전용 계정 권한: `mro_reader`(rag-mcp, RAG 테이블만), `mro_business_reader`(business-mcp, 기체·수리이력·부서만) |
 | SeedLoader | 업무 시드 `seed/*.csv` (local 프로파일) |
-| RAG 데이터 | 세환님 전달본(`data/rag/2026-10-21-rag-v1/`, git 제외)을 `scripts/rag-restore.sh`로 복원. SDR 71,741건, 근거 107,137건, 임베딩 31,678개 |
+| RAG 데이터 | 세환님 전달본(`data/rag/2026-10-21-rag-v1/`, git 제외)을 `scripts/rag-restore.sh`로 복원 (compose에서는 `rag-restore` 서비스가 자동 실행). SDR 71,741건, 근거 107,137건, 임베딩 31,678개 |
 
 조회 전용 계정 비밀번호는 Postgres 볼륨을 처음 만들 때 `docker/postgres/init`이 설정합니다 (`MRO_RAG_READER_PASSWORD`, `MRO_BUSINESS_READER_PASSWORD`, 기본값은 로컬 전용). 이미 볼륨이 있으면 `docker compose down -v` 후 다시 올려야 계정이 생깁니다.
 
@@ -49,7 +60,7 @@ mro.agent.dlx      ── run.dead      ──▶ mro.agent.run.dlq     Spring�
 
 | 환경변수 | 기본값 | 설명 |
 | --- | --- | --- |
-| `AI_MODE` | local: `mock`, 그 외: `rabbit` | `mock`이면 앱 안의 `MockAiServer`가 실행 요청 큐를 소비해 키워드 기반 가짜 판단을 보냄. 실제 AI 서버와 동시에 켜지 마세요 |
+| `AI_MODE` | local·compose: `mock`, 그 외: `rabbit` | `mock`이면 앱 안의 `MockAiServer`가 실행 요청 큐를 소비해 키워드 기반 가짜 판단을 보냄. 실제 AI 서버와 동시에 켜지 마세요 |
 | `RABBITMQ_HOST` / `RABBITMQ_PORT` | `localhost` / `5672` | |
 | `RABBITMQ_USERNAME` / `RABBITMQ_PASSWORD` | `mro` / `mro` | |
 | `JWT_SECRET` | local 프로파일만 개발용 값 | 32바이트 이상. 그 밖의 프로파일에서는 없으면 시작하지 않음 |

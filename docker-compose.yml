@@ -1,4 +1,6 @@
-# 로컬 개발용 인프라. AI 서버·MCP 서버가 준비되면 서비스를 추가합니다.
+# 로컬 개발 환경 전체.
+#   팀원 (Java 없이):   docker compose up -d --build    → DB·큐·백엔드·RAG 데이터 복원까지
+#   백엔드 개발 (영호): docker compose up -d postgres rabbitmq  후  ./gradlew bootRun
 services:
   postgres:
     # RAG 임베딩 검색에 pgvector 확장이 필요합니다.
@@ -16,6 +18,11 @@ services:
     volumes:
       - mro-pgdata:/var/lib/postgresql/data
       - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mro -d mro"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
 
   rabbitmq:
     image: rabbitmq:4.1-management-alpine
@@ -27,6 +34,55 @@ services:
       - "15672:15672"  # 관리 UI (mro / mro) — DLQ 메시지 확인·재전송
     volumes:
       - mro-rabbitmq:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      DB_URL: jdbc:postgresql://postgres:5432/mro
+      RABBITMQ_HOST: rabbitmq
+      SEED_DIR: /app/seed
+      # mock: 앱 안의 가짜 AI 서버가 실행 요청을 처리 / rabbit: 실제 AI 서버를 붙일 때
+      AI_MODE: ${AI_MODE:-mock}
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 20s
+
+  # 백엔드가 Flyway(V1~V4)를 끝낸 뒤 RAG 데이터 전달본을 한 번 복원합니다.
+  # data/rag/ 아래에 전달본이 없으면 경고만 남기고 건너뜁니다.
+  rag-restore:
+    image: pgvector/pgvector:0.8.2-pg16
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      RAG_RESTORE_DIRECT: "1"
+      PGHOST: postgres
+      PGUSER: mro
+      PGPASSWORD: mro
+      PGDATABASE: mro
+    working_dir: /work
+    volumes:
+      - ./scripts:/work/scripts:ro
+      - ./src/main/resources/db/migration:/work/src/main/resources/db/migration:ro
+      - ./data:/work/data:ro
+    entrypoint: ["bash", "scripts/rag-restore.sh"]
+    restart: "no"
 
 volumes:
   mro-pgdata:

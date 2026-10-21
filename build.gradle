@@ -52,6 +52,11 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+// 실행용 jar 하나만 만듭니다 (Dockerfile이 build/libs/*.jar를 복사).
+tasks.named('jar') {
+    enabled = false
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }

@@ -1,0 +1,12 @@
+.git
+.github
+.gradle
+.idea
+.vscode
+build
+data
+docker
+scripts
+*.md
+*.png
+.DS_Store
