@@ -8,6 +8,9 @@ spring:
 mro:
   jwt:
     secret: test-secret-0123456789abcdef0123456789
+  mcp:
+    business-jwt-secret: test-business-mcp-secret-0123456789abcdef
+    rag-jwt-secret: test-rag-mcp-secret-0123456789abcdef0123456
   ai:
     # 테스트가 AI 서버 역할을 직접 합니다 (큐에 이벤트 발행).
     mode: rabbit

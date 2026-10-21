@@ -12,6 +12,11 @@ class DatabaseSchemaTest extends IntegrationTestSupport {
                 Boolean.class, role, table));
     }
 
+    private boolean canSelectColumn(String role, String table, String column) {
+        return Boolean.TRUE.equals(jdbc.queryForObject("select has_column_privilege(?, ?, ?, 'SELECT')",
+                Boolean.class, role, table, column));
+    }
+
     @Test
     void RAG_테이블과_pgvector가_생성된다() {
         assertThat(jdbc.queryForObject("select count(*) from pg_extension where extname = 'vector'", Integer.class))
@@ -41,7 +46,14 @@ class DatabaseSchemaTest extends IntegrationTestSupport {
         assertThat(canSelect("mro_business_reader", "public.maintenance_history")).isTrue();
         assertThat(canSelect("mro_business_reader", "public.departments")).isTrue();
         assertThat(canSelect("mro_business_reader", "public.users")).isFalse();
+        // repair_requests는 테이블 전체가 아니라 B01 확인용 열만 (V6)
         assertThat(canSelect("mro_business_reader", "public.repair_requests")).isFalse();
+        for (String column : new String[]{"id", "tail_number", "aircraft_model", "airline_code", "symptom_text",
+                "status", "created_at", "version"}) {
+            assertThat(canSelectColumn("mro_business_reader", "public.repair_requests", column)).as(column).isTrue();
+        }
+        assertThat(canSelectColumn("mro_business_reader", "public.repair_requests", "reporter_id")).isFalse();
+        assertThat(canSelectColumn("mro_business_reader", "public.repair_requests", "summary")).isFalse();
         assertThat(canSelect("mro_business_reader", "public.sdr_cases")).isFalse();
         assertThat(canSelect("mro_business_reader", "public.tech_chunks")).isFalse();
     }

@@ -11,6 +11,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.rabbitmq.client.GetResponse;
 import com.skala.mro.domain.agent.config.RabbitConfig;
 import com.skala.mro.domain.agent.service.AgentTimeoutJob;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +91,66 @@ class RequestFlowTest extends IntegrationTestSupport {
         assertThat(run.get("tail_number").asText()).isEqualTo("HL7701");
         assertThat(run.get("aircraft_model").asText()).isEqualTo("A320-214");
         assertThat(run.get("symptom_text").asText()).isEqualTo("좌측 메인기어 유압유 누유");
+
+        // MCP 위임 토큰: business·rag 각각 다른 비밀값·audience로 서명, 같은 실행(run)을 가리킴
+        Claims business = mcpClaims(message, "x-mro-business-token", BUSINESS_SECRET, "mro-business");
+        Claims rag = mcpClaims(message, "x-mro-rag-token", RAG_SECRET, "mro-rag");
+        assertThat(business.get("request_id", String.class)).isEqualTo(requestId.toString());
+        assertThat(business.get("tenant_id", String.class)).isEqualTo("KAL");
+        assertThat(business.get("context_version", Integer.class)).isEqualTo(1);
+        assertThat(business.getSubject()).isEqualTo(reporterId("reporter@kal.test"));
+        assertThat(rag.get("run_id", String.class)).isEqualTo(business.get("run_id", String.class));
+        // RAG 릴리스가 없으면(복원 전) 검색 범위는 등록하지 않음
+        assertThat(count("select count(*) from rag_request_contexts")).isZero();
+    }
+
+    @Test
+    void RAG_릴리스가_준비돼_있으면_실행마다_기종으로_고정한_검색범위를_등록한다() throws Exception {
+        UUID releaseId = UUID.randomUUID();
+        jdbc.update("""
+                insert into knowledge_releases (id, release_key, source_snapshot_id, package_version, manifest_sha256,
+                  transform_version, codebook_snapshot_id, source_manifest, package_manifest, state, created_at)
+                values (?, 'REL-test', 'snap', 'v1', 'sha', 't1', 'cb', '{}', '{}', 'READY', now())""", releaseId);
+        jdbc.update("""
+                insert into knowledge_indexes (id, release_id, index_key, dataset, method, state, config_hash, config,
+                  storage_kind, created_at)
+                values (?, ?, 'IDX-sdr', 'sdr', 'LEXICAL', 'READY', 'h', '{}', 'POSTGRES_RELATIONAL', now()),
+                       (?, ?, 'IDX-jasc', 'jasc', 'LEXICAL', 'READY', 'h', '{}', 'POSTGRES_RELATIONAL', now())""",
+                UUID.randomUUID(), releaseId, UUID.randomUUID(), releaseId);
+
+        UUID requestId = submitRequest(login("reporter@kal.test"), "좌측 메인기어 유압유 누유");
+        Message message = rabbitTemplate.receive(RabbitConfig.RUN_QUEUE, WAIT.toMillis());
+        assertThat(message).isNotNull();
+        String runId = mcpClaims(message, "x-mro-rag-token", RAG_SECRET, "mro-rag").get("run_id", String.class);
+
+        Map<String, Object> context = jdbc.queryForMap(
+                "select *, index_ids::text as indexes, locked_filters::text as filters from rag_request_contexts where run_id = ?",
+                runId);
+        assertThat(context.get("request_id")).isEqualTo(requestId.toString());
+        assertThat(context.get("context_version")).isEqualTo(1);
+        assertThat(context.get("tenant_id")).isEqualTo("KAL");
+        assertThat(context.get("subject_id")).isEqualTo(reporterId("reporter@kal.test"));
+        assertThat(context.get("operator_code")).isNull();
+        assertThat(context.get("model_key")).isEqualTo("A320214");
+        assertThat(context.get("release_id")).isEqualTo(releaseId);
+        assertThat(context.get("indexes")).isEqualTo("[\"IDX-jasc\", \"IDX-sdr\"]");
+        assertThat((String) context.get("filters")).contains("\"jasc_codes\": []");
+        assertThat(context.get("active")).isEqualTo(true);
+    }
+
+    private static final String BUSINESS_SECRET = "test-business-mcp-secret-0123456789abcdef";
+    private static final String RAG_SECRET = "test-rag-mcp-secret-0123456789abcdef0123456";
+
+    private Claims mcpClaims(Message message, String header, String secret, String audience) {
+        Object token = message.getMessageProperties().getHeader(header);
+        assertThat(token).isInstanceOf(String.class);
+        return Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
+                .requireIssuer("mro-backend").requireAudience(audience).build()
+                .parseSignedClaims((String) token).getPayload();
+    }
+
+    private String reporterId(String email) {
+        return jdbc.queryForObject("select id::text from users where email = ?", String.class, email);
     }
 
     @Test
@@ -224,6 +287,17 @@ class RequestFlowTest extends IntegrationTestSupport {
                 .andExpect(jsonPath("$.summary").value("재조사 2회 후에도 근거 부족"));
         mvc.perform(as(admin, get("/api/v1/requests/{id}", failed)))
                 .andExpect(jsonPath("$.review_reason").value("SYSTEM_ERROR"));
+    }
+
+    @Test
+    void AI가_완료전_근거검증에_실패해_보낸_VALIDATION_FAILED는_사유를_그대로_남긴다() throws Exception {
+        UUID requestId = submitRequest(login("reporter@kal.test"), "원인 불명 경고등");
+        sendEvent(requestId, "COMPLETED", Map.of("outcome", "HUMAN_REVIEW", "review_reason", "VALIDATION_FAILED",
+                "summary", "최종 근거 재검증 실패"));
+
+        mvc.perform(as(login("admin@mro.test"), get("/api/v1/requests/{id}", requestId)))
+                .andExpect(jsonPath("$.status").value("HUMAN_REVIEW"))
+                .andExpect(jsonPath("$.review_reason").value("VALIDATION_FAILED"));
     }
 
     @Test

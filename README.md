@@ -58,6 +58,8 @@ mro.agent.dlx      ── run.dead      ──▶ mro.agent.run.dlq     Spring�
 ```
 
 - 큐·익스체인지는 Spring이 시작할 때 선언합니다. AI 서버는 선언하지 말고 소비·발행만 하세요.
+- **MCP 위임**: 실행 요청마다 `run_id`를 새로 만들고 `rag_request_contexts`에 검색 범위(기종만 고정, 운항사 없음)를 등록한 뒤, business-mcp·rag-mcp용 토큰을 RabbitMQ 헤더 `x-mro-business-token`·`x-mro-rag-token`으로 붙입니다 (HS256, iss `mro-backend`, aud `mro-business`/`mro-rag`, 10분). AI 서버는 `MCP_DELEGATION_TRANSPORT=amqp_headers`로 받아 각 MCP에 `Authorization: Bearer`로 전달합니다 (`McpDelegationService`).
+- business-mcp는 V6로 `repair_requests`의 확인용 열 8개만 읽습니다.
 - 실행 요청을 AI 서버가 `reject(requeue=false)`하거나 5분 안에 아무도 가져가지 않으면 실행 DLQ로 가고, 해당 요청은 사람 검토(SYSTEM_ERROR)로 넘어갑니다.
 - 이벤트 처리 중 형식 오류·없는 요청은 바로, 그 밖의 오류는 3회 재시도 후 이벤트 DLQ로 갑니다.
 
@@ -68,6 +70,7 @@ mro.agent.dlx      ── run.dead      ──▶ mro.agent.run.dlq     Spring�
 | `RABBITMQ_USERNAME` / `RABBITMQ_PASSWORD` | `mro` / `mro` | |
 | `JWT_SECRET` | local 프로파일만 개발용 값 | 32바이트 이상. 그 밖의 프로파일에서는 없으면 시작하지 않음 |
 | `CORS_ORIGINS` | `http://localhost:5173` | 쉼표로 여러 개 |
+| `MCP_BUSINESS_JWT_SECRET` / `MCP_RAG_JWT_SECRET` | local 프로파일만 개발용 값 | MCP 위임 토큰 서명용. agent 저장소 `.env.mcp`의 `BUSINESS_JWT_SECRET`·`RAG_JWT_SECRET`과 같아야 함. 32바이트 이상, 서로 다르게 |
 | `DB_URL` / `DB_USERNAME` / `DB_PASSWORD` | `jdbc:postgresql://localhost:5432/mro`, `mro`, `mro` | |
 
 ## 테스트

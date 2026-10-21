@@ -65,3 +65,12 @@ mro:
     mock-delay: 1s
   seed:
     dir: ${SEED_DIR:seed}
+  mcp:
+    # AI 서버가 business-mcp·rag-mcp를 부를 때 쓰는 요청별 위임 토큰. 각 MCP의 BUSINESS_JWT_SECRET·RAG_JWT_SECRET과 같아야 합니다.
+    # 32바이트 이상, 서로 달라야 함. local·test 프로파일 밖에서는 값이 없으면 시작하지 않습니다.
+    business-jwt-secret: ${MCP_BUSINESS_JWT_SECRET}
+    rag-jwt-secret: ${MCP_RAG_JWT_SECRET}
+    # AI 처리 한도(mro.ai.timeout 5분)보다 길게
+    token-ttl: 10m
+    context-ttl: 1h
+    mapping-revision: backend-v1-model-only

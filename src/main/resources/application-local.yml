@@ -4,3 +4,7 @@ mro:
     mode: ${AI_MODE:mock}
   jwt:
     secret: ${JWT_SECRET:local-dev-secret-change-me-0123456789abcdef}
+  mcp:
+    # 로컬 전용 기본값. agent 저장소 .env.mcp의 BUSINESS_JWT_SECRET·RAG_JWT_SECRET에 같은 값을 넣으세요.
+    business-jwt-secret: ${MCP_BUSINESS_JWT_SECRET:local-business-mcp-secret-0123456789abcdef}
+    rag-jwt-secret: ${MCP_RAG_JWT_SECRET:local-rag-mcp-secret-0123456789abcdef01234}

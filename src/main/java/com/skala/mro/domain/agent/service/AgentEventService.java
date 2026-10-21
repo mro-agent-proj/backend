@@ -122,9 +122,12 @@ public class AgentEventService {
                 workflow.assign(request, department, Actor.AI, summary);
             }
             case "HUMAN_REVIEW" -> {
-                ReviewReason reason = "RETRY_LIMIT".equals(payload.path("review_reason").asText())
-                        ? ReviewReason.RETRY_LIMIT
-                        : ReviewReason.AGENT_NEEDS_HUMAN;
+                // AI가 완료 전에 근거·범위를 재검증하다 실패하면 VALIDATION_FAILED를 보냅니다 (팀 논의 C03).
+                ReviewReason reason = switch (payload.path("review_reason").asText()) {
+                    case "RETRY_LIMIT" -> ReviewReason.RETRY_LIMIT;
+                    case "VALIDATION_FAILED" -> ReviewReason.VALIDATION_FAILED;
+                    default -> ReviewReason.AGENT_NEEDS_HUMAN;
+                };
                 workflow.updateSummary(request, summary);
                 workflow.sendToHumanReview(request, reason, Actor.AI, summary);
             }
