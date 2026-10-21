@@ -27,7 +27,7 @@ docker compose up -d postgres rabbitmq
 - 시드 계정 비밀번호는 모두 `test1234` (`seed/users.csv` 참고)
 - 신고자는 `POST /api/v1/auth/signup`(email, password 8자 이상, name, airline_code)으로 직접 가입하고 바로 로그인 토큰을 받습니다. 정비팀·어드민 계정은 시드로만 만듭니다. 가입 화면용 항공사 목록 `GET /api/v1/airlines`는 인증 없이 열려 있습니다
 - 처음부터 다시 하려면 `docker compose down -v` (DB·큐 데이터 삭제)
-- 시드 CSV(`seed/`)는 임시 데이터입니다. 수리이력은 경님, 계정은 주영님 데이터로 교체 예정
+- 시드 CSV(`seed/`): 수리이력은 경님 데이터(ATA 27 비행 조종 78건 추가), 계정은 임시 데이터로 주영님 데이터로 교체 예정
 - 실제 AI 서버를 붙일 때는 `AI_MODE=rabbit docker compose up -d --build` (기본 `mock`이면 앱 안의 가짜 AI 서버가 실행 요청을 가져감)
 
 데이터 전달본(RAG 약 124MB, 기술자료 약 1MB)은 git에 없습니다. 팀 공유 드라이브에서 받아 `data/rag/` 아래에 두세요. `scripts/restore-data.sh`가 둘 다 복원하며(compose에서는 `rag-restore` 서비스가 자동 실행), 전달본이 없으면 경고만 남기고 건너뜁니다. 스크립트는 체크섬·스키마 호환·Flyway 적용 여부를 확인한 뒤, RAG 테이블이 모두 비어 있을 때만 복원하고 `verify.sql`로 내용을 검증합니다. 이미 같은 데이터가 있으면 건너뛰고, 일부만 차 있으면 아무것도 지우지 않고 중단합니다.
@@ -44,7 +44,7 @@ DB 구조와 데이터 적재는 백엔드가 책임지고, MCP 서버들은 조
 | Flyway V5 | R04 기술자료 테이블 3개 (경님 전달본 SQL 그대로), `mro_reader` 읽기 권한 |
 | SeedLoader | 업무 시드 `seed/*.csv` (local 프로파일) |
 | RAG 데이터 | 세환님 전달본 `data/rag/2026-10-21-rag-v1/` → `scripts/rag-restore.sh`. SDR 71,741건, 근거 107,137건, 임베딩 31,678개 |
-| 기술자료 (R04) | 경님 전달본 `data/rag/mro-tech-handoff-20261021-v1/` → `scripts/tech-restore.sh`. Airbus Safety First 61편, 조각·임베딩 496개 |
+| 기술자료 (R04) | 경님 전달본 `data/rag/mro-tech-handoff-20261021-v1/` → `scripts/tech-restore.sh`. Airbus Safety First 61편, 조각·임베딩 496개. 문서별 담당 부서는 복원 마지막에 현재 부서 매핑으로 다시 계산 (`scripts/lib/tech-departments.sql`) |
 
 조회 전용 계정 비밀번호는 Postgres 볼륨을 처음 만들 때 `docker/postgres/init`이 설정합니다 (`MRO_RAG_READER_PASSWORD`, `MRO_BUSINESS_READER_PASSWORD`, 기본값은 로컬 전용). 이미 볼륨이 있으면 `docker compose down -v` 후 다시 올려야 계정이 생깁니다.
 

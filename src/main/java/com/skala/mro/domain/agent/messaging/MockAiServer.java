@@ -33,7 +33,9 @@ public class MockAiServer {
     private static final Map<String, String[]> KEYWORDS = new LinkedHashMap<>();
 
     static {
-        // 부서 코드 → {대표 ATA, 키워드...}
+        // 부서 코드 → {대표 ATA, 키워드...}. 앞에서부터 먼저 맞는 부서를 고르므로 "스피드 브레이크"가 HYD보다 FCS에 먼저 걸리게 FCS를 앞에 둡니다.
+        KEYWORDS.put("FCS", new String[]{"27", "조종면", "플랩", "슬랫", "스포일러", "스피드 브레이크", "러더", "에일러론",
+                "엘리베이터", "ELAC", "SEC", "F/CTL", "트림"});
         KEYWORDS.put("HYD", new String[]{"32", "유압", "기어", "랜딩", "브레이크", "타이어"});
         KEYWORDS.put("ENG", new String[]{"72", "엔진", "추력", "EGT", "오일", "APU"});
         KEYWORDS.put("AVI", new String[]{"34", "계기", "통신", "항법", "오토파일럿", "레이더", "FMS"});

@@ -1,9 +1,9 @@
 # 시드 시나리오 (통합 테스트 케이스)
 
-- 데이터: 에어버스 A320 계열 기체 20대·항공사 3곳(KAL·AAR·JNA, 팀 시드와 같은 코드), 수리이력 1,499건(2024-01-16 ~ 2026-10-19, 2024년 20건·2025년 284건·2026년 1,195건). FAA SDR 실제 결함을 바탕으로 한국어로 다시 쓴 목업이며, 규약 필드에 SDR의 `jasc_code`(4자리)를 더했습니다.
+- 데이터: 에어버스 A320 계열 기체 20대·항공사 3곳(KAL·AAR·JNA, 팀 시드와 같은 코드), 수리이력 1,577건(2024-01-16 ~ 2026-10-19, 2024년 20건·2025년 298건·2026년 1,259건, 이 중 ATA 27 비행 조종 78건). FAA SDR 실제 결함을 바탕으로 한국어로 다시 쓴 목업이며, 규약 필드에 SDR의 `jasc_code`(4자리)를 더했습니다.
 - 시연 기준일 2026-10-21. 요청은 이 날짜에 접수한다고 보고, 반복 결함 근거 이력은 그 직전 30일 안에 있습니다.
 
-## 1. AI 경로 시나리오 (22건: LLM1 6 · LLM2 배정 11 · 사람 검토 5)
+## 1. AI 경로 시나리오 (23건: LLM1 7 · LLM2 배정 11 · 사람 검토 5)
 
 | # | 유형 | 등록부호 | 항공사 / 모델 | 입력할 증상 | 기대 경로 | 기대 부서 | 근거 이력 |
 |---|---|---|---|---|---|---|---|
@@ -29,6 +29,7 @@
 | S20 | 모호한 증상 | HL7714 | AAR / A319-132 | L1 도어 슬라이드 압력 낮음 경고가 승무원 패널에 표시됨. 도어는 정상적으로 잠겨 있음. | REVIEWING(SUPPLEMENT ×2) → HUMAN_REVIEW(RETRY_LIMIT) 또는 REVIEWING(HUMAN) → HUMAN_REVIEW(AGENT_NEEDS_HUMAN) | 후보 CAB / STR (확정 안 됨) | 같은 기체 관련 이력 없음 |
 | S21 | 같은 ATA·다른 JASC (LLM1 함정) | HL7705 | AAR / A320-214 | 착륙 후 BRAKES HOT 경고가 뜨고 2번 메인 휠 브레이크 온도가 다른 휠보다 높게 표시됨. | CLASSIFYING(sufficient=False, 연결 이력 없음) → INVESTIGATING → REVIEWING(PASS) → ASSIGNED | HYD | MH-001305(ATA 32, JASC 3230)는 같은 ATA지만 다른 JASC라 연결하면 안 됨 (정답 JASC 3242) |
 | S22 | 같은 ATA·다른 JASC (LLM1 함정) | HL7703 | JNA / A320-212 | 순항 중 ECAM AIR PACK 1 FAULT가 뜨고 팩 출구 온도가 높게 표시됨. | CLASSIFYING(sufficient=False, 연결 이력 없음) → INVESTIGATING → REVIEWING(PASS) → ASSIGNED | SYS | MH-001341(ATA 21, JASC 2160)는 같은 ATA지만 다른 JASC라 연결하면 안 됨 (정답 JASC 2150) |
+| S23 | 반복 결함 (비행 조종) | HL7713 | KAL / A321-211 | 접근 중 플랩을 CONF 1로 내리자 ECAM F/CTL FLAP SYS 1 FAULT가 또 뜨고 플랩이 느리게 내려감. | CLASSIFYING → sufficient=True → 배정 실행 → ASSIGNED | FCS | MH-001567, MH-001574 (같은 기체 FLAP SYS 1 FAULT 반복, JASC 2750) |
 
 ## 2. 접수 단계 충돌 시나리오 (AI 서버까지 가지 않음, 422 NEEDS_SUPPLEMENT)
 
