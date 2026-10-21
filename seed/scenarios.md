@@ -1,6 +1,6 @@
 # 시드 시나리오 (통합 테스트 케이스)
 
-- 데이터: 에어버스 A320 계열 기체 20대·항공사 3곳(KAL·AAR·JNA, 팀 시드와 같은 코드), 최근 1년치(2025-10-21 ~ 2026-10-20) 수리이력. FAA SDR 실제 결함을 바탕으로 한국어로 다시 쓴 목업이며, 규약 필드에 SDR의 `jasc_code`(4자리)를 더했습니다.
+- 데이터: 에어버스 A320 계열 기체 20대·항공사 3곳(KAL·AAR·JNA, 팀 시드와 같은 코드), 수리이력 1,499건(2024-01-16 ~ 2026-10-19, 2024년 20건·2025년 284건·2026년 1,195건). FAA SDR 실제 결함을 바탕으로 한국어로 다시 쓴 목업이며, 규약 필드에 SDR의 `jasc_code`(4자리)를 더했습니다.
 - 시연 기준일 2026-10-21. 요청은 이 날짜에 접수한다고 보고, 반복 결함 근거 이력은 그 직전 30일 안에 있습니다.
 
 ## 1. AI 경로 시나리오 (22건: LLM1 6 · LLM2 배정 11 · 사람 검토 5)
@@ -32,11 +32,13 @@
 
 ## 2. 접수 단계 충돌 시나리오 (AI 서버까지 가지 않음, 422 NEEDS_SUPPLEMENT)
 
-| # | 등록부호 | airline_code | aircraft_model | 입력할 증상 | 기대 응답 details |
-|---|---|---|---|---|---|
-| V1 | HL7999 | KAL | A320-214 | 순항 중 PACK 2 결함 메시지 | tail_number: NOT_FOUND |
-| V2 | HL7701 | AAR | A320-232 | 객실 냄새 신고 | airline_code: MISMATCH (expected KAL) |
-| V3 | HL7702 | AAR | A320-214 | 도어 경고 메시지 | aircraft_model: MISMATCH (expected A321-253N) |
-| V4 | HL7720 | AAR | A320-271N | 착륙 후 브레이크 진동 | tail_number: INACTIVE |
-| V5 | HL7703 | JNA | A320-212 | (빈 값) | symptom_text: REQUIRED |
-| V6 | HL7701 | KAL | A320-232 | 객실 냄새 신고 | tail_number: FORBIDDEN_AIRLINE (신고자 소속이 AAR일 때) |
+결과가 신고자 소속 항공사에 따라 달라집니다. 다른 항공사 기체는 다른 검사보다 먼저 FORBIDDEN_AIRLINE이 나오므로, 표의 신고자 계정(비밀번호 `test1234`)으로 보내세요.
+
+| # | 신고자 계정 | 등록부호 | airline_code | aircraft_model | 입력할 증상 | 기대 응답 details |
+|---|---|---|---|---|---|---|
+| V1 | reporter1@kal.test | HL7999 | KAL | A320-214 | 순항 중 PACK 2 결함 메시지 | tail_number: NOT_FOUND |
+| V2 | reporter1@kal.test | HL7701 | AAR | A320-232 | 객실 냄새 신고 | airline_code: MISMATCH (expected KAL) |
+| V3 | reporter1@aar.test | HL7702 | AAR | A320-214 | 도어 경고 메시지 | aircraft_model: MISMATCH (expected A321-253N) |
+| V4 | reporter1@aar.test | HL7720 | AAR | A320-271N | 착륙 후 브레이크 진동 | tail_number: INACTIVE |
+| V5 | reporter1@jna.test | HL7703 | JNA | A320-212 | (빈 값) | symptom_text: REQUIRED |
+| V6 | reporter1@aar.test | HL7701 | KAL | A320-232 | 객실 냄새 신고 | tail_number: FORBIDDEN_AIRLINE (다른 항공사 기체) |
