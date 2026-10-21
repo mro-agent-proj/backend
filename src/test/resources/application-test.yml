@@ -1,0 +1,15 @@
+spring:
+  rabbitmq:
+    listener:
+      simple:
+        retry:
+          initial-interval: 100ms
+
+mro:
+  jwt:
+    secret: test-secret-0123456789abcdef0123456789
+  ai:
+    # 테스트가 AI 서버 역할을 직접 합니다 (큐에 이벤트 발행).
+    mode: rabbit
+    # 스케줄러가 테스트 중에 끼어들지 않도록 길게
+    timeout-check-interval-ms: 3600000

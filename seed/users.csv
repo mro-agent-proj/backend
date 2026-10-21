@@ -1,0 +1,15 @@
+email,name,password,role,department_code,airline_code
+admin@mro.test,관리자,test1234,ADMIN,,
+reporter1@kal.test,대한 신고자1,test1234,REPORTER,,KAL
+reporter2@kal.test,대한 신고자2,test1234,REPORTER,,KAL
+reporter1@aar.test,아시아나 신고자1,test1234,REPORTER,,AAR
+reporter2@aar.test,아시아나 신고자2,test1234,REPORTER,,AAR
+reporter1@jna.test,진에어 신고자1,test1234,REPORTER,,JNA
+reporter2@jna.test,진에어 신고자2,test1234,REPORTER,,JNA
+avi@mro.test,항전팀,test1234,MAINTENANCE,AVI,
+ele@mro.test,전기팀,test1234,MAINTENANCE,ELE,
+eng@mro.test,엔진팀,test1234,MAINTENANCE,ENG,
+hyd@mro.test,유압·착륙장치팀,test1234,MAINTENANCE,HYD,
+sys@mro.test,기계계통팀,test1234,MAINTENANCE,SYS,
+str@mro.test,구조팀,test1234,MAINTENANCE,STR,
+cab@mro.test,객실팀,test1234,MAINTENANCE,CAB,

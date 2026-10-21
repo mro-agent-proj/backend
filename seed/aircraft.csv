@@ -1,0 +1,7 @@
+tail_number,msn,aircraft_model,airline_code,active
+HL7701,5123,A320-214,KAL,true
+HL7702,5188,A321-231,KAL,true
+HL7703,4011,A320-214,KAL,false
+HL8001,6201,A321-272N,AAR,true
+HL8002,1544,A330-323,AAR,true
+HL8501,7302,A321-251NX,JNA,true

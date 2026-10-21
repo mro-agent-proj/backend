@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: mro-backend
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/mro}
+    username: ${DB_USERNAME:mro}
+    password: ${DB_PASSWORD:mro}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:mro}
+    password: ${RABBITMQ_PASSWORD:mro}
+    # 발행 후 브로커 수신 확인(waitForConfirms)에 필요
+    publisher-confirm-type: simple
+    listener:
+      simple:
+        # 실패한 메시지는 큐로 되돌리지 않고 DLQ로 보냄
+        default-requeue-rejected: false
+        retry:
+          enabled: true
+          initial-interval: 1s
+          multiplier: 3
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+    time-zone: UTC
+    serialization:
+      write-dates-as-timestamps: false
+
+server:
+  port: ${PORT:8080}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+mro:
+  jwt:
+    # 32바이트 이상. 기본값이 없으므로 local·test 프로파일 밖에서는 JWT_SECRET이 없으면 시작하지 않습니다.
+    secret: ${JWT_SECRET}
+    ttl: 8h
+  cors:
+    origins: ${CORS_ORIGINS:http://localhost:5173}
+  ai:
+    # rabbit: 실제 AI 서버가 큐를 소비 / mock: 앱 안의 가짜 AI 서버가 큐를 소비 (AI 서버 없이 개발할 때)
+    mode: ${AI_MODE:rabbit}
+    # 실행 요청 큐 메시지 TTL 겸 처리 시간 한도. 넘으면 사람 검토(SYSTEM_ERROR)
+    timeout: 5m
+    timeout-check-interval-ms: 30000
+    mock-delay: 1s
+  seed:
+    dir: ${SEED_DIR:seed}
