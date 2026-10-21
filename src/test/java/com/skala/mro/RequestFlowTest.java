@@ -152,7 +152,7 @@ class RequestFlowTest extends IntegrationTestSupport {
     @Test
     void 정비팀이_거절하면_사람검토로_가고_어드민이_다른_부서로_수동배정한다() throws Exception {
         UUID requestId = submitRequest(login("reporter@kal.test"), "엔진 쪽 진동");
-        sendEvent(requestId, "COMPLETED", Map.of("outcome", "ASSIGN", "department", "HYD"));
+        sendEvent(requestId, "COMPLETED", assign("HYD"));
 
         String hyd = login("hyd@mro.test");
         String assignmentId = body(mvc.perform(as(hyd, get("/api/v1/assignments"))))
@@ -305,7 +305,7 @@ class RequestFlowTest extends IntegrationTestSupport {
         mvc.perform(as(login("admin@mro.test"), get("/api/v1/requests/{id}", requestId)))
                 .andExpect(jsonPath("$.status").value("HUMAN_REVIEW"))
                 .andExpect(jsonPath("$.review_reason").value("SYSTEM_ERROR"));
-        sendEvent(requestId, "COMPLETED", Map.of("outcome", "ASSIGN", "department", "HYD"));
+        sendEvent(requestId, "COMPLETED", assign("HYD"));
         assertThat(requestStatus(requestId)).isEqualTo("HUMAN_REVIEW");
         assertThat(count("select count(*) from assignments")).isZero();
     }
@@ -314,7 +314,7 @@ class RequestFlowTest extends IntegrationTestSupport {
     void 어드민_통계는_상태별_부서별_건수와_자동배정률을_준다() throws Exception {
         String reporter = login("reporter@kal.test");
         UUID assigned = submitRequest(reporter, "누유");
-        sendEvent(assigned, "COMPLETED", Map.of("outcome", "ASSIGN", "department", "HYD"));
+        sendEvent(assigned, "COMPLETED", assign("HYD"));
         UUID review = submitRequest(reporter, "원인 불명");
         sendEvent(review, "COMPLETED", Map.of("outcome", "HUMAN_REVIEW"));
 

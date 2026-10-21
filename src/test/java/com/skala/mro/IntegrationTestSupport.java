@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skala.mro.domain.agent.config.RabbitConfig;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -101,7 +102,8 @@ public abstract class IntegrationTestSupport {
         }
         jdbc.execute("""
                 truncate table human_reviews, assignments, agent_assessments, agent_events, request_status_history,
-                  repair_requests, users, maintenance_history, aircraft, departments, airlines cascade""");
+                  repair_requests, users, maintenance_history, aircraft, departments, airlines,
+                  knowledge_releases cascade""");
         if (passwordHash == null) {
             passwordHash = passwordEncoder.encode(PASSWORD);
         }
@@ -114,6 +116,10 @@ public abstract class IntegrationTestSupport {
                   ('HL7701', '5123', 'A320-214', 'KAL', true),
                   ('HL7703', '4011', 'A320-214', 'KAL', false),
                   ('HL8001', '6201', 'A321-272N', 'AAR', true)""");
+        jdbc.update("""
+                insert into maintenance_history (id, tail_number, reported_at, symptom_text, ata_chapter, department_code)
+                values ('MH-000001', 'HL7701', '2026-10-01T00:00:00Z', '좌측 메인기어 유압유 누유', '32', 'HYD'),
+                       ('MH-000002', 'HL8001', '2026-10-02T00:00:00Z', '좌측 메인기어 유압유 누유', '32', 'HYD')""");
         user("reporter@kal.test", "REPORTER", null, "KAL");
         user("reporter2@kal.test", "REPORTER", null, "KAL");
         user("reporter@aar.test", "REPORTER", null, "AAR");
@@ -177,6 +183,12 @@ public abstract class IntegrationTestSupport {
     protected void awaitEventStored(UUID eventId) {
         await().atMost(WAIT).until(() -> jdbc.queryForObject(
                 "select count(*) from agent_events where event_id = ?", Integer.class, eventId) == 1);
+    }
+
+    /** 배정 COMPLETED payload. 근거는 접수 기체(HL7701, A320-214)의 수리이력 MH-000001. */
+    protected static Map<String, Object> assign(String department) {
+        return Map.of("outcome", "ASSIGN", "department", department, "summary", "누유",
+                "evidence", List.of(Map.of("source", "HISTORY", "ref_id", "MH-000001")));
     }
 
     protected String requestStatus(UUID requestId) {

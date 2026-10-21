@@ -17,6 +17,7 @@ import com.skala.mro.domain.request.repository.RepairRequestRepository;
 import com.skala.mro.domain.request.service.RequestWorkflow;
 import com.skala.mro.global.error.ApiException;
 import com.skala.mro.global.error.ErrorCode;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * AI 서버 이벤트(mro.agent.events)를 요청 상태에 반영합니다.
- * AI 서버는 "판단"만 보내고, 배정 실행(부서 검증 → ASSIGNED)은 여기서 Spring이 합니다.
+ * AI 서버는 "판단"만 보내고, 배정 실행(부서·근거 검증 → ASSIGNED)은 여기서 Spring이 합니다.
  */
 @Slf4j
 @Service
@@ -40,6 +41,7 @@ public class AgentEventService {
     private final AgentEventRepository eventRepository;
     private final AgentAssessmentRepository assessmentRepository;
     private final DepartmentRepository departmentRepository;
+    private final EvidenceValidator evidenceValidator;
     private final RequestWorkflow workflow;
     private final ObjectMapper objectMapper;
 
@@ -107,6 +109,14 @@ public class AgentEventService {
                     workflow.updateSummary(request, summary);
                     workflow.sendToHumanReview(request, ReviewReason.VALIDATION_FAILED, Actor.AI,
                             "AI가 제안한 부서 코드가 유효하지 않습니다: " + department);
+                    return;
+                }
+                List<String> invalid = evidenceValidator.findProblems(request.getAircraftModel(),
+                        payload.get("evidence"));
+                if (!invalid.isEmpty()) {
+                    workflow.updateSummary(request, summary);
+                    workflow.sendToHumanReview(request, ReviewReason.VALIDATION_FAILED, Actor.AI,
+                            "근거 검증 실패: " + String.join(", ", invalid));
                     return;
                 }
                 workflow.assign(request, department, Actor.AI, summary);
