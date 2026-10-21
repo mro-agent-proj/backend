@@ -16,11 +16,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 /**
  * AI 서버 없이 개발하기 위한 가짜 AI 서버 (mro.ai.mode=mock).
- * 실제 AI 서버와 같은 큐·메시지 형식을 씁니다. 증상 키워드로 부서를 고르고, 못 고르면 사람 검토로 보냅니다.
+ * 실제 AI 서버와 같은 큐·메시지 형식을 씁니다. 증상 키워드로 부서를 고르고, 같은 기체의 최근 수리이력을 근거로 보냅니다.
+ * 부서를 못 고르거나 이력이 없으면 사람 검토로 보냅니다.
  * 실제 AI 서버와 동시에 켜면 실행 요청을 나눠 가져가므로 함께 쓰지 마세요.
  */
 @Component
@@ -42,6 +44,7 @@ public class MockAiServer {
     }
 
     private final RabbitTemplate rabbitTemplate;
+    private final JdbcTemplate jdbc;
     private final AiProperties properties;
     private final ObjectMapper objectMapper;
 
@@ -67,10 +70,15 @@ public class MockAiServer {
         send(requestId, AgentEventType.STAGE_RESULT, result);
 
         pause();
-        if (match != null) {
+        // 근거: 같은 기체의 가장 최근 수리이력 (배정 실행 때 Spring이 근거 검증을 하므로 실제 ID를 보냄)
+        String historyId = jdbc.query(
+                "select id from maintenance_history where tail_number = ? order by reported_at desc limit 1",
+                rs -> rs.next() ? rs.getString(1) : null, run.tailNumber());
+        if (match != null && historyId != null) {
             ObjectNode completed = node().put("outcome", "ASSIGN").put("department", match.getKey())
                     .put("summary", "[MOCK] 증상 키워드로 " + match.getKey() + " 배정");
-            completed.putArray("evidence");
+            completed.putArray("evidence").addObject().put("source", "HISTORY").put("ref_id", historyId)
+                    .put("excerpt", "[MOCK] 같은 기체의 최근 수리이력").put("why", "[MOCK]");
             send(requestId, AgentEventType.COMPLETED, completed);
         } else {
             send(requestId, AgentEventType.COMPLETED, node().put("outcome", "HUMAN_REVIEW")

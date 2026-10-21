@@ -73,7 +73,7 @@ class AuthAndAccessTest extends IntegrationTestSupport {
     void 다른_사람의_요청과_다른_부서의_요청은_404() throws Exception {
         String reporter = login("reporter@kal.test");
         UUID requestId = submitRequest(reporter, "좌측 메인기어 유압유 누유");
-        sendEvent(requestId, "COMPLETED", Map.of("outcome", "ASSIGN", "department", "HYD", "summary", "누유"));
+        sendEvent(requestId, "COMPLETED", assign("HYD"));
 
         mvc.perform(as(login("reporter2@kal.test"), get("/api/v1/requests/{id}", requestId)))
                 .andExpect(status().isNotFound());
