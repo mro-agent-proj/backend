@@ -68,11 +68,12 @@ public class SeedLoader implements ApplicationRunner {
                 bool(r, "active", true)));
         load(dir, "maintenance_history.csv", r -> jdbc.update("""
                         insert into maintenance_history
-                          (id, tail_number, reported_at, symptom_text, ata_chapter, action_taken, department_code, closed_at)
-                        values (?, ?, ?, ?, ?, ?, ?, ?)""",
+                          (id, tail_number, reported_at, symptom_text, ata_chapter, jasc_code, action_taken,
+                           department_code, closed_at)
+                        values (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                 r.get("id"), r.get("tail_number"), timestamp(r, "reported_at"), r.get("symptom_text"),
-                r.get("ata_chapter"), blankToNull(r, "action_taken"), blankToNull(r, "department_code"),
-                timestamp(r, "closed_at")));
+                r.get("ata_chapter"), blankToNull(r, "jasc_code"), blankToNull(r, "action_taken"),
+                blankToNull(r, "department_code"), timestamp(r, "closed_at")));
         load(dir, "users.csv", r -> jdbc.update("""
                         insert into users (id, email, name, password_hash, role, department_code, airline_code, active)
                         values (?, ?, ?, ?, ?, ?, ?, true)""",
