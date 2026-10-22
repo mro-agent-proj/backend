@@ -12,3 +12,6 @@ out/
 
 # RAG 데이터 덤프 등 git에 넣지 않는 대용량 데이터
 /data/
+
+# VS Code Java 빌드 결과물
+bin/
