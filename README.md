@@ -154,7 +154,8 @@ data/
 │   └── sdr/                          단위 평가: FAA SDR 기반 검색·분류·부서·매핑
 ├── rag-dump/                   제외  DB 복원용 덤프 (통합 레포 Release로 받음)
 │   ├── sdr-jasc-amm_v1/              SDR·JASC·AMM·근거·임베딩 (124MB)
-│   └── airbus-safety-first_v1/       기술자료: Airbus Safety First 61편 (1MB)
+│   ├── airbus-safety-first_v1/       기술자료: Airbus Safety First 61편 (1MB)
+│   └── sdr-embeddings_v1/            R02 하이브리드용 SDR 임베딩 (OpenAI 3-large, 1024차원, 317MB)
 └── rag-csv/                    제외  덤프 내용을 사람이 보는 CSV로 뽑은 것 (확인·공유용)
     ├── sdr-by-year/                  SDR 원본 레코드, 연도별 CSV
     └── db-tables/                    RAG 테이블별 CSV (gzip)
@@ -170,6 +171,7 @@ data/
 | SeedLoader | `data/seed/*.csv` (local 프로파일, users 테이블이 비어 있을 때만) |
 | RAG 데이터 | 전달본 `data/rag-dump/sdr-jasc-amm_v1/` → `scripts/rag-restore.sh`. SDR 71,741건, 근거 107,137건, 임베딩 31,678개 |
 | 기술자료 (R04) | 전달본 `data/rag-dump/airbus-safety-first_v1/` → `scripts/tech-restore.sh`. Airbus Safety First 61편, 조각·임베딩 496개 |
+| SDR 임베딩 (R02 하이브리드) | Flyway V7 `rag.sdr_embeddings` + 전달본 `data/rag-dump/sdr-embeddings_v1/` → `scripts/sdr-embed-restore.sh`. SDR 71,741건, OpenAI text-embedding-3-large 1024차원. 없으면 R02는 단어 검색만 함 |
 
 데이터 전달본(RAG 약 124MB, 기술자료 약 1MB)은 git에 없습니다. [통합 레포](https://github.com/mro-agent-proj/mro-agent-integration)의 `scripts/fetch-data.sh`로 받으면 `data/rag-dump/`(복원용 덤프)와 `data/rag-csv/`(확인용 CSV)에 풀립니다. `scripts/restore-data.sh`가 둘 다 복원하며(compose에서는 `rag-restore` 서비스가 자동 실행), 전달본이 없으면 경고만 남기고 건너뜁니다.
 
