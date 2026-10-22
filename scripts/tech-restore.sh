@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # R04 기술자료(경님 전달본: Airbus Safety First) 초기 복원. 전달본 RESTORE.md 규칙을 따릅니다.
 #
-#   ./scripts/tech-restore.sh [패키지 폴더]     # 기본: data/rag/mro-tech-handoff-20261021-v1
+#   ./scripts/tech-restore.sh [패키지 폴더]     # 기본: data/rag-dump/airbus-safety-first_v1
 #
 # - 전달본이 없으면 경고만 남기고 건너뜁니다.
 # - 테이블 3개가 모두 비어 있을 때만 복원합니다. 이미 같은 데이터가 있으면 검증 후 건너뜁니다.
@@ -13,7 +13,7 @@ cd "$(dirname "$0")/.."
 LOG_TAG=tech-restore
 source scripts/lib/restore-common.sh
 
-PACKAGE_DIR="${1:-data/rag/mro-tech-handoff-20261021-v1}"
+PACKAGE_DIR="${1:-data/rag-dump/airbus-safety-first_v1}"
 if [ ! -d "$PACKAGE_DIR" ]; then
     log "경고: 전달본이 없어 복원을 건너뜁니다 ($PACKAGE_DIR). 기술자료(R04)는 미준비 상태입니다."
     exit 0

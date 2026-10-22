@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # RAG 데이터(세환님 전달본: SDR·AMM·JASC·임베딩) 초기 복원. 전달본 RESTORE.md 규칙을 따릅니다.
 #
-#   ./scripts/rag-restore.sh [패키지 폴더]     # 기본: data/rag/2026-10-21-rag-v1
+#   ./scripts/rag-restore.sh [패키지 폴더]     # 기본: data/rag-dump/sdr-jasc-amm_v1
 #
 # - 전달본이 없으면 경고만 남기고 건너뜁니다.
 # - RAG 테이블 9개가 모두 비어 있을 때만 복원합니다. 같은 release가 있으면 검증 후 건너뜁니다.
@@ -11,10 +11,10 @@ cd "$(dirname "$0")/.."
 LOG_TAG=rag-restore
 source scripts/lib/restore-common.sh
 
-PACKAGE_DIR="${1:-data/rag/2026-10-21-rag-v1}"
+PACKAGE_DIR="${1:-data/rag-dump/sdr-jasc-amm_v1}"
 if [ ! -d "$PACKAGE_DIR" ]; then
     log "경고: 전달본이 없어 복원을 건너뜁니다 ($PACKAGE_DIR). RAG 데이터는 미준비 상태입니다."
-    log "      팀 공유 드라이브의 전달본을 data/rag/ 아래에 두고 다시 실행하세요."
+    log "      팀 공유 드라이브의 전달본을 data/rag-dump/ 아래에 두고 다시 실행하세요."
     exit 0
 fi
 DUMP="$(ls "$PACKAGE_DIR"/*.dump 2>/dev/null | head -1)"

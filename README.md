@@ -146,10 +146,14 @@ DB 구조와 데이터 적재는 백엔드가 책임집니다. 스키마 변경�
 
 ```
 data/
-├── seed/     git   업무 시드 CSV (항공사·기체·부서·계정·수리이력)
-├── eval/     git   평가셋 (시나리오 23건 + 접수 검증 6건), 결과 results/는 git 제외
-├── rag/      제외  RAG·기술자료 전달본 (.dump), 통합 레포 Release로 받음
-└── source/   제외  DB 원문을 CSV로 뽑은 것 (확인·공유용), 통합 레포 Release로 받음
+├── seed/                       git   업무 시드 CSV (항공사·기체·부서·계정·수리이력)
+├── eval/                       git   평가셋 (시나리오 23건 + 접수 검증 6건), 결과 results/는 git 제외
+├── rag-dump/                   제외  DB 복원용 덤프 (통합 레포 Release로 받음)
+│   ├── sdr-jasc-amm_v1/              SDR·JASC·AMM·근거·임베딩 (124MB)
+│   └── airbus-safety-first_v1/       기술자료: Airbus Safety First 61편 (1MB)
+└── rag-csv/                    제외  덤프 내용을 사람이 보는 CSV로 뽑은 것 (확인·공유용)
+    ├── sdr-by-year/                  SDR 원본 레코드, 연도별 CSV
+    └── db-tables/                    RAG 테이블별 CSV (gzip)
 ```
 
 | 단계 | 내용 |
@@ -160,10 +164,10 @@ data/
 | Flyway V5 | R04 기술자료 테이블 3개 (경님 전달본 SQL 그대로) |
 | Flyway V6 | `mro_business_reader`에 `repair_requests` 확인용 열 8개 |
 | SeedLoader | `data/seed/*.csv` (local 프로파일, users 테이블이 비어 있을 때만) |
-| RAG 데이터 | 전달본 `data/rag/2026-10-21-rag-v1/` → `scripts/rag-restore.sh`. SDR 71,741건, 근거 107,137건, 임베딩 31,678개 |
-| 기술자료 (R04) | 전달본 `data/rag/mro-tech-handoff-20261021-v1/` → `scripts/tech-restore.sh`. Airbus Safety First 61편, 조각·임베딩 496개 |
+| RAG 데이터 | 전달본 `data/rag-dump/sdr-jasc-amm_v1/` → `scripts/rag-restore.sh`. SDR 71,741건, 근거 107,137건, 임베딩 31,678개 |
+| 기술자료 (R04) | 전달본 `data/rag-dump/airbus-safety-first_v1/` → `scripts/tech-restore.sh`. Airbus Safety First 61편, 조각·임베딩 496개 |
 
-데이터 전달본(RAG 약 124MB, 기술자료 약 1MB)은 git에 없습니다. [통합 레포](https://github.com/mro-agent-proj/mro-agent-integration)의 `scripts/fetch-data.sh`로 받으면 `data/rag/`(전달본)와 `data/source/`(DB 원문 CSV, 확인용)에 풀립니다. `scripts/restore-data.sh`가 둘 다 복원하며(compose에서는 `rag-restore` 서비스가 자동 실행), 전달본이 없으면 경고만 남기고 건너뜁니다.
+데이터 전달본(RAG 약 124MB, 기술자료 약 1MB)은 git에 없습니다. [통합 레포](https://github.com/mro-agent-proj/mro-agent-integration)의 `scripts/fetch-data.sh`로 받으면 `data/rag-dump/`(복원용 덤프)와 `data/rag-csv/`(확인용 CSV)에 풀립니다. `scripts/restore-data.sh`가 둘 다 복원하며(compose에서는 `rag-restore` 서비스가 자동 실행), 전달본이 없으면 경고만 남기고 건너뜁니다.
 
 - 복원 전 체크섬·스키마 호환·Flyway 적용 여부를 확인하고, 테이블이 모두 비어 있을 때만 복원한 뒤 `verify.sql`로 검증합니다.
 - 이미 같은 데이터가 있으면 건너뛰고, 일부만 차 있으면 아무것도 지우지 않고 중단합니다.

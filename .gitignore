@@ -11,8 +11,8 @@ out/
 *.png
 
 # data/ 중 seed·eval은 git에 두고, 대용량 전달본·원문 추출본만 뺍니다 (통합 레포 Release로 배포)
-/data/rag/
-/data/source/
+/data/rag-dump/
+/data/rag-csv/
 /data/eval/results/
 
 # VS Code Java 빌드 결과물

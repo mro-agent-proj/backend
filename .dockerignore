@@ -4,8 +4,8 @@
 .idea
 .vscode
 build
-data/rag
-data/source
+data/rag-dump
+data/rag-csv
 data/eval
 docker
 scripts
