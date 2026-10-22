@@ -13,10 +13,11 @@ out/
 # data/ 중 seed·eval은 git에 두고, 대용량 전달본·원문 추출본만 뺍니다 (통합 레포 Release로 배포)
 /data/rag-dump/
 /data/rag-csv/
-/data/eval/results/
+/data/eval/scenario/results/
+/data/eval/.faa-cache/
 
 # VS Code Java 빌드 결과물
 bin/
 
-# Python 캐시 (scripts/eval.py)
+# Python 캐시 (scripts/*.py)
 __pycache__/

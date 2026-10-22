@@ -84,7 +84,9 @@ docker compose up -d postgres rabbitmq
 | `airlines.csv` / `aircraft.csv` | 항공사 3곳, A320 계열 기체 20대 (HL7720은 운용 중지) |
 | `maintenance_history.csv` | 수리이력 1,577건 (FAA SDR 실제 결함을 한국어로 다시 쓴 목업, 경님 데이터 + ATA 27 78건) |
 
-평가셋은 `data/eval/`에 있습니다: `scenarios.md`(AI 경로 S01~S23의 기대 경로·부서·근거 이력, 접수 검증 V1~V6), 같은 내용의 `scenarios.jsonl`·`validation.jsonl`, 실제 스택에 보내 채점하는 `scripts/eval.py`. 자세한 내용은 [data/eval/README.md](data/eval/README.md).
+평가셋은 `data/eval/`에 두 가지가 있습니다. 자세한 내용은 [data/eval/README.md](data/eval/README.md).
+- `scenario/` 통합 평가: AI 경로 S01~S23(기대 경로·부서·근거 이력)과 접수 검증 V1~V6. `scripts/scenario_eval.py`로 실제 스택에 보내 채점합니다.
+- `sdr/` 단위 평가: FAA 공개 SDR 2019~2020(검색 대상과 기간이 안 겹침)으로 만든 검색(R01·R02)·LLM1 분류·LLM2 부서 결정·JASC 매핑 평가셋. `scripts/build_sdr_eval.py`로 다시 만들 수 있습니다.
 
 계정 시드는 임시 데이터이며 주영님 데이터로 교체 예정입니다.
 
@@ -147,7 +149,9 @@ DB 구조와 데이터 적재는 백엔드가 책임집니다. 스키마 변경�
 ```
 data/
 ├── seed/                       git   업무 시드 CSV (항공사·기체·부서·계정·수리이력)
-├── eval/                       git   평가셋 (시나리오 23건 + 접수 검증 6건), 결과 results/는 git 제외
+├── eval/                       git   평가셋
+│   ├── scenario/                     통합 평가: 시나리오 23건 + 접수 검증 6건 (결과 results/는 git 제외)
+│   └── sdr/                          단위 평가: FAA SDR 기반 검색·분류·부서·매핑
 ├── rag-dump/                   제외  DB 복원용 덤프 (통합 레포 Release로 받음)
 │   ├── sdr-jasc-amm_v1/              SDR·JASC·AMM·근거·임베딩 (124MB)
 │   └── airbus-safety-first_v1/       기술자료: Airbus Safety First 61편 (1MB)

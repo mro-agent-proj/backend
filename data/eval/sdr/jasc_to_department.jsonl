@@ -1,0 +1,548 @@
+{"jasc": "1100", "jasc_title": "PLACARDS AND MARKINGS", "ata": "11", "expected_department": null}
+{"jasc": "1210", "jasc_title": "FUEL SERVICING", "ata": "12", "expected_department": null}
+{"jasc": "1220", "jasc_title": "OIL SERVICING", "ata": "12", "expected_department": null}
+{"jasc": "1230", "jasc_title": "HYDRAULIC FLUID SERVICING", "ata": "12", "expected_department": null}
+{"jasc": "1240", "jasc_title": "COOLANT SERVICING", "ata": "12", "expected_department": null}
+{"jasc": "1400", "jasc_title": "MISCELLANEOUS HARDWARE", "ata": "14", "expected_department": null}
+{"jasc": "1410", "jasc_title": "HOSES AND TUBES", "ata": "14", "expected_department": null}
+{"jasc": "1420", "jasc_title": "ELECTRICAL CONNECTORS", "ata": "14", "expected_department": null}
+{"jasc": "1430", "jasc_title": "FASTENERS", "ata": "14", "expected_department": null}
+{"jasc": "1497", "jasc_title": "MISCELLANEOUS WIRING", "ata": "14", "expected_department": null}
+{"jasc": "1800", "jasc_title": "HELICOPTER VIB/NOISE ANALYSIS", "ata": "18", "expected_department": null}
+{"jasc": "1810", "jasc_title": "HELICOPTER VIBRATION ANALYSIS", "ata": "18", "expected_department": null}
+{"jasc": "1820", "jasc_title": "HELICOPTER NOISE ANALYSIS", "ata": "18", "expected_department": null}
+{"jasc": "1897", "jasc_title": "HELICOPTER VIBRATION SYSTEM WIRING", "ata": "18", "expected_department": null}
+{"jasc": "2100", "jasc_title": "AIR CONDITIONING SYSTEM", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2110", "jasc_title": "CABIN COMPRESSOR SYSTEM", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2120", "jasc_title": "AIR DISTRIBUTION SYSTEM", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2121", "jasc_title": "AIR DISTRIBUTION FAN", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2130", "jasc_title": "CABIN PRESSURE CONTROL SYSTEM", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2131", "jasc_title": "CABIN PRESSURE CONTROLLER", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2132", "jasc_title": "CABIN PRESSURE INDICATOR", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2133", "jasc_title": "PRESSURE REGUL/OUTFLOW VALVE", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2134", "jasc_title": "CABIN PRESSURE SENSOR", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2140", "jasc_title": "HEATING SYSTEM", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2150", "jasc_title": "CABIN COOLING SYSTEM", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2160", "jasc_title": "CABIN TEMPERATURE CONTROL SYSTEM", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2161", "jasc_title": "CABIN TEMPERATURE CONTROLLER", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2162", "jasc_title": "CABIN TEMPERATURE INDICATOR", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2163", "jasc_title": "CABIN TEMPERATURE SENSOR", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2170", "jasc_title": "HUMIDITY CONTROL SYSTEM", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2197", "jasc_title": "AIR CONDITIONING SYSTEM WIRING", "ata": "21", "expected_department": "SYS"}
+{"jasc": "2200", "jasc_title": "AUTO FLIGHT SYSTEM", "ata": "22", "expected_department": "AVI"}
+{"jasc": "2210", "jasc_title": "AUTOPILOT SYSTEM", "ata": "22", "expected_department": "AVI"}
+{"jasc": "2211", "jasc_title": "AUTOPILOT COMPUTER", "ata": "22", "expected_department": "AVI"}
+{"jasc": "2212", "jasc_title": "ALTITUDE CONTROLLER", "ata": "22", "expected_department": "AVI"}
+{"jasc": "2213", "jasc_title": "FLIGHT CONTROLLER", "ata": "22", "expected_department": "AVI"}
+{"jasc": "2214", "jasc_title": "AUTOPILOT TRIM INDICATOR", "ata": "22", "expected_department": "AVI"}
+{"jasc": "2215", "jasc_title": "AUTOPILOT MAIN SERVO", "ata": "22", "expected_department": "AVI"}
+{"jasc": "2216", "jasc_title": "AUTOPILOT TRIM SERVO", "ata": "22", "expected_department": "AVI"}
+{"jasc": "2220", "jasc_title": "SPEED-ATTITUDE CORRECT. SYSTEM", "ata": "22", "expected_department": "AVI"}
+{"jasc": "2230", "jasc_title": "AUTO THROTTLE SYSTEM", "ata": "22", "expected_department": "AVI"}
+{"jasc": "2250", "jasc_title": "AERODYNAMIC LOAD ALLEVIATING", "ata": "22", "expected_department": "AVI"}
+{"jasc": "2297", "jasc_title": "AUTOFLIGHT SYSTEM WIRING", "ata": "22", "expected_department": "AVI"}
+{"jasc": "2300", "jasc_title": "COMMUNICATIONS SYSTEM", "ata": "23", "expected_department": "AVI"}
+{"jasc": "2310", "jasc_title": "HF COMMUNICATION SYSTEM", "ata": "23", "expected_department": "AVI"}
+{"jasc": "2311", "jasc_title": "UHF COMMUNICATION SYSTEM", "ata": "23", "expected_department": "AVI"}
+{"jasc": "2312", "jasc_title": "VHF COMMUNICATION SYSTEM", "ata": "23", "expected_department": "AVI"}
+{"jasc": "2320", "jasc_title": "DATA TRANSMISSION AUTO CALL", "ata": "23", "expected_department": "AVI"}
+{"jasc": "2330", "jasc_title": "ENTERTAINMENT SYSTEM", "ata": "23", "expected_department": "AVI"}
+{"jasc": "2340", "jasc_title": "INTERPHONE/PASSENGER PA SYSTEM", "ata": "23", "expected_department": "AVI"}
+{"jasc": "2350", "jasc_title": "AUDIO INTEGRATING SYSTEM", "ata": "23", "expected_department": "AVI"}
+{"jasc": "2360", "jasc_title": "STATIC DISCHARGE SYSTEM", "ata": "23", "expected_department": "AVI"}
+{"jasc": "2370", "jasc_title": "AUDIO/VIDEO MONITORING", "ata": "23", "expected_department": "AVI"}
+{"jasc": "2397", "jasc_title": "COMMUNICATION SYSTEM WIRING", "ata": "23", "expected_department": "AVI"}
+{"jasc": "2400", "jasc_title": "ELECTRICAL POWER SYSTEM", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2410", "jasc_title": "ALTERNATOR-GENERATOR DRIVE", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2420", "jasc_title": "AC GENERATION SYSTEM", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2421", "jasc_title": "AC GENERATOR-ALTERNATOR", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2422", "jasc_title": "AC INVERTER", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2423", "jasc_title": "PHASE ADAPTER", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2424", "jasc_title": "AC REGULATOR", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2425", "jasc_title": "AC INDICATING SYSTEM", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2430", "jasc_title": "DC GENERATING SYSTEM", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2431", "jasc_title": "BATTERY OVERHEAT WARN. SYSTEM", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2432", "jasc_title": "BATTERY/CHARGER SYSTEM", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2433", "jasc_title": "DC RECTIFIER/CONVERTER", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2434", "jasc_title": "DC GENERATOR-ALTERNATOR", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2435", "jasc_title": "STARTER-GENERATOR", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2436", "jasc_title": "DC REGULATOR", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2437", "jasc_title": "DC INDICATING SYSTEM", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2440", "jasc_title": "EXTERNAL POWER SYSTEM", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2450", "jasc_title": "AC POWER DISTRIBUTION SYSTEM", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2460", "jasc_title": "DC POWER/DISTRIBUTION SYSTEM", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2497", "jasc_title": "ELECTRICAL POWER SYSTEM WIRING", "ata": "24", "expected_department": "ELE"}
+{"jasc": "2500", "jasc_title": "CABIN EQUIPMENT/FURNISHINGS", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2510", "jasc_title": "FLIGHT COMPARTMENT EQUIPMENT", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2520", "jasc_title": "PASSENGER COMPARTMENT EQUIPMENT", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2530", "jasc_title": "BUFFET/GALLEYS", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2540", "jasc_title": "LAVATORIES", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2550", "jasc_title": "CARGO COMPARTMENTS", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2551", "jasc_title": "AGRICULTURAL SPRAY SYSTEM", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2560", "jasc_title": "EMERGENCY EQUIPMENT", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2561", "jasc_title": "LIFE JACKET", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2562", "jasc_title": "EMERGENCY LOCATOR BEACON", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2563", "jasc_title": "PARACHUTE", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2564", "jasc_title": "LIFE RAFT", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2565", "jasc_title": "ESCAPE SLIDE", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2570", "jasc_title": "ACCESSORY COMPARTMENT", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2571", "jasc_title": "BATTERY BOX STRUCTURE", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2572", "jasc_title": "ELECTRONIC SHELF SECTION", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2597", "jasc_title": "EQUIP/FURNISHING SYSTEM WIRING", "ata": "25", "expected_department": "CAB"}
+{"jasc": "2600", "jasc_title": "FIRE PROTECTION SYSTEM", "ata": "26", "expected_department": "SYS"}
+{"jasc": "2610", "jasc_title": "DETECTION SYSTEM", "ata": "26", "expected_department": "SYS"}
+{"jasc": "2611", "jasc_title": "SMOKE DETECTION", "ata": "26", "expected_department": "SYS"}
+{"jasc": "2612", "jasc_title": "FIRE DETECTION", "ata": "26", "expected_department": "SYS"}
+{"jasc": "2613", "jasc_title": "OVERHEAT DETECTION", "ata": "26", "expected_department": "SYS"}
+{"jasc": "2620", "jasc_title": "EXTINGUISHING SYSTEM", "ata": "26", "expected_department": "SYS"}
+{"jasc": "2621", "jasc_title": "FIRE BOTTLE, FIXED", "ata": "26", "expected_department": "SYS"}
+{"jasc": "2622", "jasc_title": "FIRE BOTTLE, PORTABLE", "ata": "26", "expected_department": "SYS"}
+{"jasc": "2697", "jasc_title": "FIRE PROTECTION SYSTEM WIRING", "ata": "26", "expected_department": "SYS"}
+{"jasc": "2700", "jasc_title": "FLIGHT CONTROL SYSTEM", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2701", "jasc_title": "CONTROL COLUMN SECTION", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2710", "jasc_title": "AILERON CONTROL SYSTEM", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2711", "jasc_title": "AILERON TAB CONTROL SYSTEM", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2720", "jasc_title": "RUDDER CONTROL SYSTEM", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2721", "jasc_title": "RUDDER TAB CONTROL SYSTEM", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2722", "jasc_title": "RUDDER ACTUATOR", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2730", "jasc_title": "ELEVATOR CONTROL SYSTEM", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2731", "jasc_title": "ELEVATOR TAB CONTROL SYSTEM", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2740", "jasc_title": "STABILIZER CONTROL SYSTEM", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2741", "jasc_title": "STABILIZER POSITION INDICATING", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2742", "jasc_title": "STABILIZER ACTUATOR", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2750", "jasc_title": "TE FLAP CONTROL SYSTEM", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2751", "jasc_title": "TE FLAP POSITION IND. SYSTEM", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2752", "jasc_title": "TE FLAP ACTUATOR", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2760", "jasc_title": "DRAG CONTROL SYSTEM", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2761", "jasc_title": "DRAG CONTROL ACTUATOR", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2770", "jasc_title": "GUST LOCK/DAMPER SYSTEM", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2780", "jasc_title": "LE SLAT CONTROL SYSTEM", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2781", "jasc_title": "LE SLAT POSITION IND. SYSTEM", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2782", "jasc_title": "LE SLAT ACTUATOR", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2797", "jasc_title": "FLIGHT CONTROL SYSTEM WIRING", "ata": "27", "expected_department": "FCS"}
+{"jasc": "2800", "jasc_title": "AIRCRAFT FUEL SYSTEM", "ata": "28", "expected_department": "SYS"}
+{"jasc": "2810", "jasc_title": "FUEL STORAGE", "ata": "28", "expected_department": "SYS"}
+{"jasc": "2820", "jasc_title": "ACFT FUEL DISTRIB. SYSTEM", "ata": "28", "expected_department": "SYS"}
+{"jasc": "2821", "jasc_title": "ACFT FUEL FILTER/STRAINER", "ata": "28", "expected_department": "SYS"}
+{"jasc": "2822", "jasc_title": "FUEL BOOST PUMP", "ata": "28", "expected_department": "SYS"}
+{"jasc": "2823", "jasc_title": "FUEL SELECTOR/SHUT-OFF VALVE", "ata": "28", "expected_department": "SYS"}
+{"jasc": "2824", "jasc_title": "FUEL TRANSFER VALVE", "ata": "28", "expected_department": "SYS"}
+{"jasc": "2830", "jasc_title": "FUEL DUMP SYSTEM", "ata": "28", "expected_department": "SYS"}
+{"jasc": "2840", "jasc_title": "ACFT FUEL INDICATING SYSTEM", "ata": "28", "expected_department": "SYS"}
+{"jasc": "2841", "jasc_title": "FUEL QUANTITY INDICATOR", "ata": "28", "expected_department": "SYS"}
+{"jasc": "2842", "jasc_title": "FUEL QUANTITY SENSOR", "ata": "28", "expected_department": "SYS"}
+{"jasc": "2843", "jasc_title": "FUEL TEMPERATURE INDICATOR", "ata": "28", "expected_department": "SYS"}
+{"jasc": "2844", "jasc_title": "FUEL PRESSURE INDICATOR", "ata": "28", "expected_department": "SYS"}
+{"jasc": "2897", "jasc_title": "FUEL SYSTEM WIRING", "ata": "28", "expected_department": "SYS"}
+{"jasc": "2900", "jasc_title": "HYDRAULIC POWER SYSTEM", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2910", "jasc_title": "HYDRAULIC SYSTEM, MAIN", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2911", "jasc_title": "HYDRAULIC POWER ACCUMULATOR, MAIN", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2912", "jasc_title": "HYDRAULIC FILTER, MAIN", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2913", "jasc_title": "HYDRAULIC PUMP, (ELECT/ENG), MAIN", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2914", "jasc_title": "HYDRAULIC HANDPUMP, MAIN", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2915", "jasc_title": "HYDRAULIC PRESSURE RELIEF VLV, MAIN", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2916", "jasc_title": "HYDRAULIC RESERVOIR, MAIN", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2917", "jasc_title": "HYDRAULIC PRESSURE REGULATOR, MAIN", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2920", "jasc_title": "HYDRAULIC SYSTEM, AUXILIARY", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2921", "jasc_title": "HYDRAULIC ACCUMULATOR, AUXILIARY", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2922", "jasc_title": "HYDRAULIC FILTER, AUXILIARY", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2923", "jasc_title": "HYDRAULIC PUMP, AUXILIARY", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2924", "jasc_title": "JASC 2924", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2925", "jasc_title": "HYDRAULIC PRESSURE RELIEF, AUXILIARY", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2926", "jasc_title": "HYDRAULIC RESERVOIR, AUXILIARY", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2927", "jasc_title": "HYDRAULIC PRESSURE REGULATOR, AUX.", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2930", "jasc_title": "HYDRAULIC INDICATING SYSTEM", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2931", "jasc_title": "HYDRAULIC PRESSURE INDICATOR", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2932", "jasc_title": "HYDRAULIC PRESSURE SENSOR", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2933", "jasc_title": "HYDRAULIC QUANTITY INDICATOR", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2934", "jasc_title": "HYDRAULIC QUANTITY SENSOR", "ata": "29", "expected_department": "HYD"}
+{"jasc": "2997", "jasc_title": "HYDRAULIC POWER SYSTEM WIRING", "ata": "29", "expected_department": "HYD"}
+{"jasc": "3000", "jasc_title": "ICE/RAIN PROTECTION SYSTEM", "ata": "30", "expected_department": "SYS"}
+{"jasc": "3010", "jasc_title": "AIRFOIL ANTI/DE-ICE SYSTEM", "ata": "30", "expected_department": "SYS"}
+{"jasc": "3020", "jasc_title": "AIR INTAKE ANTI/DE-ICE SYSTEM", "ata": "30", "expected_department": "SYS"}
+{"jasc": "3030", "jasc_title": "PITOT/STATIC ANTI-ICE SYSTEM", "ata": "30", "expected_department": "SYS"}
+{"jasc": "3040", "jasc_title": "WINDSHIELD/DOOR RAIN/ICE REMOVAL", "ata": "30", "expected_department": "SYS"}
+{"jasc": "3050", "jasc_title": "ANTENNA/RADOME ANTI-ICE/DE-ICE SYSTEM", "ata": "30", "expected_department": "SYS"}
+{"jasc": "3060", "jasc_title": "PROP/ROTOR ANTI-ICE/DE-ICE SYSTEM", "ata": "30", "expected_department": "SYS"}
+{"jasc": "3070", "jasc_title": "WATER LINE ANTI-ICE SYSTEM", "ata": "30", "expected_department": "SYS"}
+{"jasc": "3080", "jasc_title": "ICE DETECTION", "ata": "30", "expected_department": "SYS"}
+{"jasc": "3097", "jasc_title": "ICE/RAIN PROTECTION SYSTEM WIRING", "ata": "30", "expected_department": "SYS"}
+{"jasc": "3100", "jasc_title": "INDICATING/RECORDING SYSTEM", "ata": "31", "expected_department": "AVI"}
+{"jasc": "3110", "jasc_title": "INSTRUMENT PANEL", "ata": "31", "expected_department": "AVI"}
+{"jasc": "3120", "jasc_title": "INDEPENDENT INSTRUMENTS (CLOCK, ETC.)", "ata": "31", "expected_department": "AVI"}
+{"jasc": "3130", "jasc_title": "DATA RECORDERS (FLT/MAINT)", "ata": "31", "expected_department": "AVI"}
+{"jasc": "3140", "jasc_title": "CENTRAL COMPUTERS (EICAS)", "ata": "31", "expected_department": "AVI"}
+{"jasc": "3150", "jasc_title": "CENTRAL WARNING", "ata": "31", "expected_department": "AVI"}
+{"jasc": "3160", "jasc_title": "CENTRAL DISPLAY", "ata": "31", "expected_department": "AVI"}
+{"jasc": "3170", "jasc_title": "AUTOMATIC DATA", "ata": "31", "expected_department": "AVI"}
+{"jasc": "3197", "jasc_title": "INSTRUMENT SYSTEM WIRING", "ata": "31", "expected_department": "AVI"}
+{"jasc": "3200", "jasc_title": "LANDING GEAR SYSTEM", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3201", "jasc_title": "LANDING GEAR/WHEEL FAIRING", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3210", "jasc_title": "MAIN LANDING GEAR", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3211", "jasc_title": "MAIN LANDING GEAR ATTACH SECTION", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3212", "jasc_title": "EMERGENCY FLOTATION SECTION", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3213", "jasc_title": "MAIN LANDING GEAR STRUT/AXLE/TRUCK", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3220", "jasc_title": "NOSE/TAIL LANDING GEAR", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3221", "jasc_title": "NOSE/TAIL LANDING GEAR ATTACH SECTION", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3222", "jasc_title": "NOSE/TAIL LANDING GEAR STRUT/AXLE", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3230", "jasc_title": "LANDING GEAR RETRACT/EXTEND SYSTEM", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3231", "jasc_title": "LANDING GEAR DOOR RETRACT SECTION", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3232", "jasc_title": "LANDING GEAR DOOR ACTUATOR", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3233", "jasc_title": "LANDING GEAR ACTUATOR", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3234", "jasc_title": "LANDING GEAR SELECTOR", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3240", "jasc_title": "LANDING GEAR BRAKE SYSTEM", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3241", "jasc_title": "BRAKE ANTI-SKID SECTION", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3242", "jasc_title": "BRAKE", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3243", "jasc_title": "MASTER CYLINDER/BRAKE VALVE", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3244", "jasc_title": "TIRE", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3245", "jasc_title": "TIRE TUBE", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3246", "jasc_title": "WHEEL/SKI/FLOAT", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3250", "jasc_title": "LANDING GEAR STEERING SYSTEM", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3251", "jasc_title": "STEERING UNIT", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3252", "jasc_title": "SHIMMY DAMPER", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3260", "jasc_title": "LANDING GEAR POSITION AND WARNING", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3270", "jasc_title": "AUXILIARY GEAR (TAIL SKID)", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3297", "jasc_title": "LANDING GEAR SYSTEM WIRING", "ata": "32", "expected_department": "HYD"}
+{"jasc": "3300", "jasc_title": "LIGHTING SYSTEM", "ata": "33", "expected_department": "ELE"}
+{"jasc": "3310", "jasc_title": "FLIGHT COMPARTMENT LIGHTING", "ata": "33", "expected_department": "ELE"}
+{"jasc": "3320", "jasc_title": "PASSENGER COMPARTMENT LIGHTING", "ata": "33", "expected_department": "ELE"}
+{"jasc": "3330", "jasc_title": "CARGO COMPARTMENT LIGHTING", "ata": "33", "expected_department": "ELE"}
+{"jasc": "3340", "jasc_title": "EXTERIOR LIGHTING", "ata": "33", "expected_department": "ELE"}
+{"jasc": "3350", "jasc_title": "EMERGENCY LIGHTING", "ata": "33", "expected_department": "ELE"}
+{"jasc": "3397", "jasc_title": "LIGHT SYSTEM WIRING", "ata": "33", "expected_department": "ELE"}
+{"jasc": "3400", "jasc_title": "NAVIGATION SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3410", "jasc_title": "FLIGHT ENVIRONMENT DATA", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3411", "jasc_title": "PITOT/STATIC SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3412", "jasc_title": "OUTSIDE AIR TEMP. IND./SENSOR", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3413", "jasc_title": "RATE OF CLIMB INDICATOR", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3414", "jasc_title": "AIRSPEED/MACH INDICATOR", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3415", "jasc_title": "HIGH SPEED WARNING", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3416", "jasc_title": "ALTIMETER, BAROMETRIC/ENCODER", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3417", "jasc_title": "AIR DATA COMPUTER", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3418", "jasc_title": "STALL WARNING SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3420", "jasc_title": "ATTITUDE AND DIRECTION DATA SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3421", "jasc_title": "ATTITUDE GYRO AND IND. SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3422", "jasc_title": "DIRECTIONAL GYRO AND IND. SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3423", "jasc_title": "MAGNETIC COMPASS", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3424", "jasc_title": "TURN AND BANK/RATE OF TURN INDICATOR", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3425", "jasc_title": "INTEGRATED FLT. DIRECTOR SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3430", "jasc_title": "LANDING AND TAXI AIDS", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3431", "jasc_title": "LOCALIZER/VOR SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3432", "jasc_title": "GLIDE SLOPE SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3433", "jasc_title": "MICROWAVE LANDING SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3434", "jasc_title": "MARKER BEACON SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3435", "jasc_title": "HEADS UP DISPLAY SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3436", "jasc_title": "WIND SHEAR DETECTION SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3440", "jasc_title": "INDEPENDENT POS. DETERMINING SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3441", "jasc_title": "INERTIAL GUIDANCE SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3442", "jasc_title": "WEATHER RADAR SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3443", "jasc_title": "DOPPLER SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3444", "jasc_title": "GROUND PROXIMITY SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3445", "jasc_title": "AIR COLLISION AVOIDANCE SYSTEM (TCAS)", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3446", "jasc_title": "NON RADAR WEATHER SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3450", "jasc_title": "DEPENDENT POSITION DETERMINING SYS", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3451", "jasc_title": "DME/TACAN SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3452", "jasc_title": "ATC TRANSPONDER SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3453", "jasc_title": "LORAN SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3454", "jasc_title": "VOR SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3455", "jasc_title": "ADF SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3456", "jasc_title": "OMEGA NAVIGATION SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3457", "jasc_title": "GLOBAL POSITIONING SYSTEM", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3460", "jasc_title": "FLT MANAGE. COMPUTING HARDWARE SYS", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3461", "jasc_title": "FLT MANAGE. COMPUTING SOFTWARE SYS", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3497", "jasc_title": "NAVIGATION SYSTEM WIRING", "ata": "34", "expected_department": "AVI"}
+{"jasc": "3500", "jasc_title": "OXYGEN SYSTEM", "ata": "35", "expected_department": "CAB"}
+{"jasc": "3510", "jasc_title": "CREW OXYGEN SYSTEM", "ata": "35", "expected_department": "CAB"}
+{"jasc": "3520", "jasc_title": "PASSENGER OXYGEN SYSTEM", "ata": "35", "expected_department": "CAB"}
+{"jasc": "3530", "jasc_title": "PORTABLE OXYGEN SYSTEM", "ata": "35", "expected_department": "CAB"}
+{"jasc": "3597", "jasc_title": "OXYGEN SYSTEM WIRING", "ata": "35", "expected_department": "CAB"}
+{"jasc": "3600", "jasc_title": "PNEUMATIC SYSTEM", "ata": "36", "expected_department": "SYS"}
+{"jasc": "3610", "jasc_title": "PNEUMATIC DISTRIBUTION SYSTEM", "ata": "36", "expected_department": "SYS"}
+{"jasc": "3620", "jasc_title": "PNEUMATIC INDICATING SYSTEM", "ata": "36", "expected_department": "SYS"}
+{"jasc": "3697", "jasc_title": "PNEUMATIC SYSTEM WIRING", "ata": "36", "expected_department": "SYS"}
+{"jasc": "3700", "jasc_title": "VACUUM SYSTEM", "ata": "37", "expected_department": null}
+{"jasc": "3710", "jasc_title": "VACUUM DISTRIBUTION SYSTEM", "ata": "37", "expected_department": null}
+{"jasc": "3720", "jasc_title": "VACUUM INDICATING SYSTEM", "ata": "37", "expected_department": null}
+{"jasc": "3797", "jasc_title": "VACUUM SYSTEM WIRING", "ata": "37", "expected_department": null}
+{"jasc": "3800", "jasc_title": "WATER AND WASTE SYSTEM", "ata": "38", "expected_department": "CAB"}
+{"jasc": "3810", "jasc_title": "POTABLE WATER SYSTEM", "ata": "38", "expected_department": "CAB"}
+{"jasc": "3820", "jasc_title": "WASH WATER SYSTEM", "ata": "38", "expected_department": "CAB"}
+{"jasc": "3830", "jasc_title": "WASTE DISPOSAL SYSTEM", "ata": "38", "expected_department": "CAB"}
+{"jasc": "3840", "jasc_title": "AIR SUPPLY (WATER PRESS. SYSTEM)", "ata": "38", "expected_department": "CAB"}
+{"jasc": "3897", "jasc_title": "WATER/WASTE SYSTEM WIRING", "ata": "38", "expected_department": "CAB"}
+{"jasc": "4500", "jasc_title": "CENTRAL MAINT. COMPUTER", "ata": "45", "expected_department": null}
+{"jasc": "4597", "jasc_title": "CENTRAL MAINT. SYSTEM WIRING", "ata": "45", "expected_department": null}
+{"jasc": "4900", "jasc_title": "AIRBORNE APU SYSTEM", "ata": "49", "expected_department": "ENG"}
+{"jasc": "4910", "jasc_title": "APU COWLING/CONTAINMENT", "ata": "49", "expected_department": "ENG"}
+{"jasc": "4920", "jasc_title": "APU CORE ENGINE", "ata": "49", "expected_department": "ENG"}
+{"jasc": "4930", "jasc_title": "APU ENGINE FUEL AND CONTROL", "ata": "49", "expected_department": "ENG"}
+{"jasc": "4940", "jasc_title": "APU START/IGNITION SYSTEM", "ata": "49", "expected_department": "ENG"}
+{"jasc": "4950", "jasc_title": "APU BLEED AIR SYSTEM", "ata": "49", "expected_department": "ENG"}
+{"jasc": "4960", "jasc_title": "APU CONTROLS", "ata": "49", "expected_department": "ENG"}
+{"jasc": "4970", "jasc_title": "APU INDICATING SYSTEM", "ata": "49", "expected_department": "ENG"}
+{"jasc": "4980", "jasc_title": "APU EXHAUST SYSTEM", "ata": "49", "expected_department": "ENG"}
+{"jasc": "4990", "jasc_title": "APU OIL SYSTEM", "ata": "49", "expected_department": "ENG"}
+{"jasc": "4997", "jasc_title": "APU SYSTEM WIRING", "ata": "49", "expected_department": "ENG"}
+{"jasc": "5100", "jasc_title": "STANDARD PRACTICES/STRUCTURES", "ata": "51", "expected_department": "STR"}
+{"jasc": "5101", "jasc_title": "AIRCRAFT STRUCTURES", "ata": "51", "expected_department": "STR"}
+{"jasc": "5102", "jasc_title": "BALLOON REPORTS", "ata": "51", "expected_department": "STR"}
+{"jasc": "5200", "jasc_title": "DOORS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5210", "jasc_title": "PASSENGER/CREW DOORS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5220", "jasc_title": "EMERGENCY EXITS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5230", "jasc_title": "CARGO/BAGGAGE DOORS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5240", "jasc_title": "SERVICE DOORS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5241", "jasc_title": "GALLEY DOORS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5242", "jasc_title": "E/E COMPARTMENT DOORS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5243", "jasc_title": "HYDRAULIC COMPARTMENT DOORS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5244", "jasc_title": "ACCESSORY COMPARTMENT DOORS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5245", "jasc_title": "AIR CONDITIONING COMPART. DOORS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5246", "jasc_title": "FLUID SERVICE DOORS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5247", "jasc_title": "APU DOORS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5248", "jasc_title": "TAIL CONE DOORS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5250", "jasc_title": "FIXED INNER DOORS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5260", "jasc_title": "ENTRANCE STAIRS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5270", "jasc_title": "DOOR WARNING SYSTEM", "ata": "52", "expected_department": "STR"}
+{"jasc": "5280", "jasc_title": "LANDING GEAR DOORS", "ata": "52", "expected_department": "STR"}
+{"jasc": "5297", "jasc_title": "DOOR SYSTEM WIRING", "ata": "52", "expected_department": "STR"}
+{"jasc": "5300", "jasc_title": "FUSELAGE STRUCTURE (GENERAL)", "ata": "53", "expected_department": "STR"}
+{"jasc": "5301", "jasc_title": "AERIAL TOW EQUIPMENT", "ata": "53", "expected_department": "STR"}
+{"jasc": "5302", "jasc_title": "ROTORCRAFT TAIL BOOM", "ata": "53", "expected_department": "STR"}
+{"jasc": "5310", "jasc_title": "FUSELAGE MAIN, STRUCTURE", "ata": "53", "expected_department": "STR"}
+{"jasc": "5311", "jasc_title": "FUSELAGE MAIN, FRAME", "ata": "53", "expected_department": "STR"}
+{"jasc": "5312", "jasc_title": "FUSELAGE MAIN, BULKHEAD", "ata": "53", "expected_department": "STR"}
+{"jasc": "5313", "jasc_title": "FUSELAGE MAIN, LONGERON/STRINGER", "ata": "53", "expected_department": "STR"}
+{"jasc": "5314", "jasc_title": "FUSELAGE MAIN, KEEL", "ata": "53", "expected_department": "STR"}
+{"jasc": "5315", "jasc_title": "FUSELAGE MAIN, FLOOR BEAM", "ata": "53", "expected_department": "STR"}
+{"jasc": "5320", "jasc_title": "FUSELAGE MISCELLANEOUS STRUCTURE", "ata": "53", "expected_department": "STR"}
+{"jasc": "5321", "jasc_title": "FUSELAGE FLOOR PANEL", "ata": "53", "expected_department": "STR"}
+{"jasc": "5322", "jasc_title": "FUSELAGE INTERNAL MOUNT STRUCTURE", "ata": "53", "expected_department": "STR"}
+{"jasc": "5323", "jasc_title": "FUSELAGE INTERNAL STAIRS", "ata": "53", "expected_department": "STR"}
+{"jasc": "5324", "jasc_title": "FUSELAGE FIXED PARTITIONS", "ata": "53", "expected_department": "STR"}
+{"jasc": "5330", "jasc_title": "FUSELAGE MAIN, PLATE/SKIN", "ata": "53", "expected_department": "STR"}
+{"jasc": "5340", "jasc_title": "FUSELAGE MAIN, ATTACH FITTINGS", "ata": "53", "expected_department": "STR"}
+{"jasc": "5341", "jasc_title": "FUSELAGE, WING ATTACH FITTINGS", "ata": "53", "expected_department": "STR"}
+{"jasc": "5342", "jasc_title": "FUSELAGE, STABILIZER ATTACH FITTINGS", "ata": "53", "expected_department": "STR"}
+{"jasc": "5343", "jasc_title": "LANDING GEAR ATTACH FITTINGS", "ata": "53", "expected_department": "STR"}
+{"jasc": "5344", "jasc_title": "FUSELAGE DOOR HINGES", "ata": "53", "expected_department": "STR"}
+{"jasc": "5345", "jasc_title": "FUSELAGE EQUIPMENT ATTACH FITTINGS", "ata": "53", "expected_department": "STR"}
+{"jasc": "5346", "jasc_title": "POWERPLANT ATTACH FITTINGS", "ata": "53", "expected_department": "STR"}
+{"jasc": "5347", "jasc_title": "SEAT/CARGO ATTACH FITTINGS", "ata": "53", "expected_department": "STR"}
+{"jasc": "5350", "jasc_title": "AERODYNAMIC FAIRINGS", "ata": "53", "expected_department": "STR"}
+{"jasc": "5397", "jasc_title": "FUSELAGE WIRING", "ata": "53", "expected_department": "STR"}
+{"jasc": "5400", "jasc_title": "NACELLE/PYLON STRUCTURE", "ata": "54", "expected_department": "STR"}
+{"jasc": "5410", "jasc_title": "NACELLE/PYLON, MAIN FRAME", "ata": "54", "expected_department": "STR"}
+{"jasc": "5411", "jasc_title": "NACELLE/PYLON, FRAME/SPAR/RIB", "ata": "54", "expected_department": "STR"}
+{"jasc": "5412", "jasc_title": "NACELLE/PYLON, BULKHEAD/FIREWALL", "ata": "54", "expected_department": "STR"}
+{"jasc": "5413", "jasc_title": "NACELLE/PYLON, LONGERON/STRINGER", "ata": "54", "expected_department": "STR"}
+{"jasc": "5414", "jasc_title": "NACELLE/PYLON, PLATE SKIN", "ata": "54", "expected_department": "STR"}
+{"jasc": "5415", "jasc_title": "NACELLE/PYLON, ATTACH FITTINGS", "ata": "54", "expected_department": "STR"}
+{"jasc": "5420", "jasc_title": "NACELLE/PYLON MISCELLANEOUS STRUCT.", "ata": "54", "expected_department": "STR"}
+{"jasc": "5497", "jasc_title": "NACELLE/PYLON SYSTEM WIRING", "ata": "54", "expected_department": "STR"}
+{"jasc": "5500", "jasc_title": "EMPENNAGE STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5510", "jasc_title": "HORIZONTAL STABILIZER STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5511", "jasc_title": "HORIZONTAL STABILIZER, SPAR/RIB", "ata": "55", "expected_department": "STR"}
+{"jasc": "5512", "jasc_title": "HORIZONTAL STABILIZER, PLATE/SKIN", "ata": "55", "expected_department": "STR"}
+{"jasc": "5513", "jasc_title": "HORIZONTAL STABILIZER, TAB STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5514", "jasc_title": "HORIZ STAB MISCELLANEOUS STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5520", "jasc_title": "ELEVATOR STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5521", "jasc_title": "ELEVATOR, SPAR/RIB STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5522", "jasc_title": "ELEVATOR, PLATES/SKIN STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5523", "jasc_title": "ELEVATOR, TAB STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5524", "jasc_title": "ELEVATOR MISCELLANEOUS STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5530", "jasc_title": "VERTICAL STABILIZER STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5531", "jasc_title": "VERTICAL STABILIZER, SPAR/RIB STRUCT.", "ata": "55", "expected_department": "STR"}
+{"jasc": "5532", "jasc_title": "VERTICAL STABILIZER, PLATES/SKIN", "ata": "55", "expected_department": "STR"}
+{"jasc": "5533", "jasc_title": "VENTRAL STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5534", "jasc_title": "VERT. STAB. MISCELLANEOUS STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5540", "jasc_title": "RUDDER STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5541", "jasc_title": "RUDDER, SPAR/RIB", "ata": "55", "expected_department": "STR"}
+{"jasc": "5542", "jasc_title": "RUDDER, PLATE/SKIN", "ata": "55", "expected_department": "STR"}
+{"jasc": "5543", "jasc_title": "RUDDER, TAB STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5544", "jasc_title": "RUDDER MISCELLANEOUS STRUCTURE", "ata": "55", "expected_department": "STR"}
+{"jasc": "5550", "jasc_title": "EMPENNAGE FLT. CONT., ATTACH FITTING", "ata": "55", "expected_department": "STR"}
+{"jasc": "5551", "jasc_title": "HORIZONTAL STABILIZER, ATTACH FITTING", "ata": "55", "expected_department": "STR"}
+{"jasc": "5552", "jasc_title": "ELEVATOR/TAB, ATTACH FITTINGS", "ata": "55", "expected_department": "STR"}
+{"jasc": "5553", "jasc_title": "VERT. STAB., ATTACH FITTINGS", "ata": "55", "expected_department": "STR"}
+{"jasc": "5554", "jasc_title": "RUDDER/TAB, ATTACH FITTINGS", "ata": "55", "expected_department": "STR"}
+{"jasc": "5597", "jasc_title": "STABILIZER SYSTEM WIRING", "ata": "55", "expected_department": "STR"}
+{"jasc": "5600", "jasc_title": "WINDOW/WINDSHIELD SYSTEM", "ata": "56", "expected_department": "STR"}
+{"jasc": "5610", "jasc_title": "FLIGHT COMPARTMENT WINDOWS", "ata": "56", "expected_department": "STR"}
+{"jasc": "5620", "jasc_title": "PASSENGER COMPARTMENT WINDOWS", "ata": "56", "expected_department": "STR"}
+{"jasc": "5630", "jasc_title": "DOOR WINDOWS", "ata": "56", "expected_department": "STR"}
+{"jasc": "5640", "jasc_title": "INSPECTION WINDOWS", "ata": "56", "expected_department": "STR"}
+{"jasc": "5697", "jasc_title": "WINDOW SYSTEM WIRING", "ata": "56", "expected_department": "STR"}
+{"jasc": "5700", "jasc_title": "WING STRUCTURE", "ata": "57", "expected_department": "STR"}
+{"jasc": "5710", "jasc_title": "WING, MAIN FRAME STRUCTURE", "ata": "57", "expected_department": "STR"}
+{"jasc": "5711", "jasc_title": "WING SPAR", "ata": "57", "expected_department": "STR"}
+{"jasc": "5712", "jasc_title": "WING, RIB/BULKHEAD", "ata": "57", "expected_department": "STR"}
+{"jasc": "5713", "jasc_title": "WING, LONGERON/STRINGER", "ata": "57", "expected_department": "STR"}
+{"jasc": "5714", "jasc_title": "WING, CENTER BOX", "ata": "57", "expected_department": "STR"}
+{"jasc": "5720", "jasc_title": "WING MISCELLANEOUS STRUCTURE", "ata": "57", "expected_department": "STR"}
+{"jasc": "5730", "jasc_title": "WING, PLATES/SKINS", "ata": "57", "expected_department": "STR"}
+{"jasc": "5740", "jasc_title": "WING, ATTACH FITTINGS", "ata": "57", "expected_department": "STR"}
+{"jasc": "5741", "jasc_title": "WING, FUSELAGE ATTACH FITTINGS", "ata": "57", "expected_department": "STR"}
+{"jasc": "5742", "jasc_title": "WING, NAC/PYLON ATTACH FITTINGS", "ata": "57", "expected_department": "STR"}
+{"jasc": "5743", "jasc_title": "WING, LANDING GEAR ATTACH FITTINGS", "ata": "57", "expected_department": "STR"}
+{"jasc": "5744", "jasc_title": "WING, CONT. SURFACE ATTACH FITTINGS", "ata": "57", "expected_department": "STR"}
+{"jasc": "5750", "jasc_title": "WING, CONTROL SURFACES", "ata": "57", "expected_department": "STR"}
+{"jasc": "5751", "jasc_title": "AILERONS", "ata": "57", "expected_department": "STR"}
+{"jasc": "5752", "jasc_title": "AILERON TAB STRUCTURE", "ata": "57", "expected_department": "STR"}
+{"jasc": "5753", "jasc_title": "TRAILING EDGE FLAPS", "ata": "57", "expected_department": "STR"}
+{"jasc": "5754", "jasc_title": "LEADING EDGE DEVICES", "ata": "57", "expected_department": "STR"}
+{"jasc": "5755", "jasc_title": "SPOILERS", "ata": "57", "expected_department": "STR"}
+{"jasc": "5797", "jasc_title": "WING SYSTEM WIRING", "ata": "57", "expected_department": "STR"}
+{"jasc": "6100", "jasc_title": "PROPELLER SYSTEM", "ata": "61", "expected_department": null}
+{"jasc": "6110", "jasc_title": "PROPELLER ASSEMBLY", "ata": "61", "expected_department": null}
+{"jasc": "6111", "jasc_title": "PROPELLER BLADE SECTION", "ata": "61", "expected_department": null}
+{"jasc": "6112", "jasc_title": "PROPELLER DE-ICE BOOT SECTION", "ata": "61", "expected_department": null}
+{"jasc": "6113", "jasc_title": "PROPELLER SPINNER SECTION", "ata": "61", "expected_department": null}
+{"jasc": "6114", "jasc_title": "PROPELLER HUB SECTION", "ata": "61", "expected_department": null}
+{"jasc": "6120", "jasc_title": "PROPELLER CONTROLLING SYSTEM", "ata": "61", "expected_department": null}
+{"jasc": "6121", "jasc_title": "PROPELLER SYNCHRONIZER SECTION", "ata": "61", "expected_department": null}
+{"jasc": "6122", "jasc_title": "PROPELLER GOVERNOR", "ata": "61", "expected_department": null}
+{"jasc": "6123", "jasc_title": "PROPELLER FEATHERING/REVERSING", "ata": "61", "expected_department": null}
+{"jasc": "6130", "jasc_title": "PROPELLER BRAKING", "ata": "61", "expected_department": null}
+{"jasc": "6140", "jasc_title": "PROPELLER INDICATING SYSTEM", "ata": "61", "expected_department": null}
+{"jasc": "6197", "jasc_title": "PROPELLER/PROPULSORS SYSTEM WIRING", "ata": "61", "expected_department": null}
+{"jasc": "6200", "jasc_title": "MAIN ROTOR SYSTEM", "ata": "62", "expected_department": null}
+{"jasc": "6210", "jasc_title": "MAIN ROTOR BLADES", "ata": "62", "expected_department": null}
+{"jasc": "6220", "jasc_title": "MAIN ROTOR HEAD", "ata": "62", "expected_department": null}
+{"jasc": "6230", "jasc_title": "MAIN ROTOR MAST/SWASHPLATE", "ata": "62", "expected_department": null}
+{"jasc": "6240", "jasc_title": "MAIN ROTOR INDICATING SYSTEM", "ata": "62", "expected_department": null}
+{"jasc": "6297", "jasc_title": "MAIN ROTOR SYSTEM WIRING", "ata": "62", "expected_department": null}
+{"jasc": "6300", "jasc_title": "MAIN ROTOR DRIVE SYSTEM", "ata": "63", "expected_department": null}
+{"jasc": "6310", "jasc_title": "ENGINE/TRANSMISSION COUPLING", "ata": "63", "expected_department": null}
+{"jasc": "6320", "jasc_title": "MAIN ROTOR GEARBOX", "ata": "63", "expected_department": null}
+{"jasc": "6321", "jasc_title": "MAIN ROTOR BRAKE", "ata": "63", "expected_department": null}
+{"jasc": "6322", "jasc_title": "ROTORCRAFT COOLING FAN SYSTEM", "ata": "63", "expected_department": null}
+{"jasc": "6330", "jasc_title": "MAIN ROTOR TRANSMISSION MOUNT", "ata": "63", "expected_department": null}
+{"jasc": "6340", "jasc_title": "ROTOR DRIVE INDICATING SYSTEM", "ata": "63", "expected_department": null}
+{"jasc": "6397", "jasc_title": "MAIN ROTOR DRIVE SYSTEM WIRING", "ata": "63", "expected_department": null}
+{"jasc": "6400", "jasc_title": "TAIL ROTOR SYSTEM", "ata": "64", "expected_department": null}
+{"jasc": "6410", "jasc_title": "TAIL ROTOR BLADES", "ata": "64", "expected_department": null}
+{"jasc": "6420", "jasc_title": "TAIL ROTOR HEAD", "ata": "64", "expected_department": null}
+{"jasc": "6440", "jasc_title": "TAIL ROTOR INDICATING SYSTEM", "ata": "64", "expected_department": null}
+{"jasc": "6497", "jasc_title": "TAIL ROTOR SYSTEM WIRING", "ata": "64", "expected_department": null}
+{"jasc": "6500", "jasc_title": "TAIL ROTOR DRIVE SYSTEM", "ata": "65", "expected_department": null}
+{"jasc": "6510", "jasc_title": "TAIL ROTOR DRIVE SHAFT", "ata": "65", "expected_department": null}
+{"jasc": "6520", "jasc_title": "TAIL ROTOR GEARBOX", "ata": "65", "expected_department": null}
+{"jasc": "6540", "jasc_title": "TAIL ROTOR DRIVE INDICATING SYSTEM", "ata": "65", "expected_department": null}
+{"jasc": "6597", "jasc_title": "TAIL ROTOR DRIVE SYSTEM WIRING", "ata": "65", "expected_department": null}
+{"jasc": "6700", "jasc_title": "ROTORCRAFT FLIGHT CONTROL", "ata": "67", "expected_department": null}
+{"jasc": "6710", "jasc_title": "MAIN ROTOR CONTROL", "ata": "67", "expected_department": null}
+{"jasc": "6711", "jasc_title": "TILT ROTOR FLIGHT CONTROL", "ata": "67", "expected_department": null}
+{"jasc": "6720", "jasc_title": "TAIL ROTOR CONTROL SYSTEM", "ata": "67", "expected_department": null}
+{"jasc": "6730", "jasc_title": "ROTORCRAFT SERVO SYSTEM", "ata": "67", "expected_department": null}
+{"jasc": "6797", "jasc_title": "ROTORS FLIGHT CONTROL SYSTEM WIRING", "ata": "67", "expected_department": null}
+{"jasc": "7100", "jasc_title": "POWERPLANT SYSTEM", "ata": "71", "expected_department": "ENG"}
+{"jasc": "7110", "jasc_title": "ENGINE COWLING SYSTEM", "ata": "71", "expected_department": "ENG"}
+{"jasc": "7111", "jasc_title": "ENGINE COWL FLAPS", "ata": "71", "expected_department": "ENG"}
+{"jasc": "7112", "jasc_title": "ENGINE AIR BAFFLE SECTION", "ata": "71", "expected_department": "ENG"}
+{"jasc": "7120", "jasc_title": "ENGINE MOUNT SECTION", "ata": "71", "expected_department": "ENG"}
+{"jasc": "7130", "jasc_title": "ENGINE FIRESEALS", "ata": "71", "expected_department": "ENG"}
+{"jasc": "7160", "jasc_title": "ENGINE AIR INTAKE SYSTEM", "ata": "71", "expected_department": "ENG"}
+{"jasc": "7170", "jasc_title": "ENGINE DRAINS", "ata": "71", "expected_department": "ENG"}
+{"jasc": "7197", "jasc_title": "POWERPLANT SYSTEM WIRING", "ata": "71", "expected_department": "ENG"}
+{"jasc": "7200", "jasc_title": "ENGINE (TURBINE/TURBOPROP)", "ata": "72", "expected_department": "ENG"}
+{"jasc": "7210", "jasc_title": "TURBINE ENGINE REDUCTION GEAR", "ata": "72", "expected_department": "ENG"}
+{"jasc": "7220", "jasc_title": "TURBINE ENGINE AIR INLET SECTION", "ata": "72", "expected_department": "ENG"}
+{"jasc": "7230", "jasc_title": "TURBINE ENGINE COMPRESSOR SECTION", "ata": "72", "expected_department": "ENG"}
+{"jasc": "7240", "jasc_title": "TURBINE ENGINE COMBUSTION SECTION", "ata": "72", "expected_department": "ENG"}
+{"jasc": "7250", "jasc_title": "TURBINE SECTION", "ata": "72", "expected_department": "ENG"}
+{"jasc": "7260", "jasc_title": "TURBINE ENGINE ACCESSORY DRIVE", "ata": "72", "expected_department": "ENG"}
+{"jasc": "7261", "jasc_title": "TURBINE ENGINE OIL SYSTEM", "ata": "72", "expected_department": "ENG"}
+{"jasc": "7270", "jasc_title": "TURBINE ENGINE BYPASS SECTION", "ata": "72", "expected_department": "ENG"}
+{"jasc": "7297", "jasc_title": "TURBINE ENGINE SYSTEM WIRING", "ata": "72", "expected_department": "ENG"}
+{"jasc": "7300", "jasc_title": "ENGINE FUEL AND CONTROL", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7310", "jasc_title": "ENGINE FUEL DISTRIBUTION", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7311", "jasc_title": "ENGINE FUEL/OIL COOLER", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7312", "jasc_title": "FUEL HEATER", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7313", "jasc_title": "FUEL INJECTOR NOZZLE", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7314", "jasc_title": "ENGINE FUEL PUMP", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7320", "jasc_title": "FUEL CONTROLLING SYSTEM", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7321", "jasc_title": "FUEL CONTROL/TURBINE ENGINES", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7322", "jasc_title": "FUEL CONTROL/RECEIPROCATING ENGINES", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7323", "jasc_title": "TURBINE GOVERNOR", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7324", "jasc_title": "FUEL DIVIDER", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7330", "jasc_title": "ENGINE FUEL INDICATING SYSTEM", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7331", "jasc_title": "FUEL FLOW INDICATING", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7332", "jasc_title": "FUEL PRESSURE INDICATING", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7333", "jasc_title": "FUEL FLOW SENSOR", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7334", "jasc_title": "FUEL PRESSURE SENSOR", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7397", "jasc_title": "ENGINE FUEL SYSTEM WIRING", "ata": "73", "expected_department": "ENG"}
+{"jasc": "7400", "jasc_title": "IGNITION SYSTEM", "ata": "74", "expected_department": "ENG"}
+{"jasc": "7410", "jasc_title": "IGNITION POWER SUPPLY", "ata": "74", "expected_department": "ENG"}
+{"jasc": "7411", "jasc_title": "LOW TENSION COIL", "ata": "74", "expected_department": "ENG"}
+{"jasc": "7412", "jasc_title": "EXCITER", "ata": "74", "expected_department": "ENG"}
+{"jasc": "7413", "jasc_title": "INDUCTION VIBRATOR", "ata": "74", "expected_department": "ENG"}
+{"jasc": "7414", "jasc_title": "MAGNETO/DISTRIBUTOR", "ata": "74", "expected_department": "ENG"}
+{"jasc": "7420", "jasc_title": "IGNITION HARNESS (DISTRIBUTION)", "ata": "74", "expected_department": "ENG"}
+{"jasc": "7421", "jasc_title": "SPARK PLUG/IGNITER", "ata": "74", "expected_department": "ENG"}
+{"jasc": "7430", "jasc_title": "IGNITION/STARTER SWITCHING", "ata": "74", "expected_department": "ENG"}
+{"jasc": "7497", "jasc_title": "IGNITION SYSTEM WIRING", "ata": "74", "expected_department": "ENG"}
+{"jasc": "7500", "jasc_title": "ENGINE BLEED AIR SYSTEM", "ata": "75", "expected_department": "ENG"}
+{"jasc": "7510", "jasc_title": "ENGINE ANTI-ICING SYSTEM", "ata": "75", "expected_department": "ENG"}
+{"jasc": "7520", "jasc_title": "ENGINE COOLING SYSTEM", "ata": "75", "expected_department": "ENG"}
+{"jasc": "7530", "jasc_title": "COMPRESSOR BLEED CONTROL", "ata": "75", "expected_department": "ENG"}
+{"jasc": "7531", "jasc_title": "COMPRESSOR BLEED GOVERNOR", "ata": "75", "expected_department": "ENG"}
+{"jasc": "7532", "jasc_title": "COMPRESSOR BLEED VALVE", "ata": "75", "expected_department": "ENG"}
+{"jasc": "7540", "jasc_title": "BLEED AIR INDICATING SYSTEM", "ata": "75", "expected_department": "ENG"}
+{"jasc": "7597", "jasc_title": "ENGINE BLEED AIR SYSTEM WIRING", "ata": "75", "expected_department": "ENG"}
+{"jasc": "7600", "jasc_title": "ENGINE CONTROLS", "ata": "76", "expected_department": "ENG"}
+{"jasc": "7601", "jasc_title": "ENGINE SYNCHRONIZING", "ata": "76", "expected_department": "ENG"}
+{"jasc": "7602", "jasc_title": "MIXTURE CONTROL", "ata": "76", "expected_department": "ENG"}
+{"jasc": "7603", "jasc_title": "POWER LEVER", "ata": "76", "expected_department": "ENG"}
+{"jasc": "7620", "jasc_title": "ENGINE EMERGENCY SHUTDOWN SYSTEM", "ata": "76", "expected_department": "ENG"}
+{"jasc": "7697", "jasc_title": "ENGINE CONTROL SYSTEM WIRING", "ata": "76", "expected_department": "ENG"}
+{"jasc": "7700", "jasc_title": "ENGINE INDICATING SYSTEM", "ata": "77", "expected_department": "ENG"}
+{"jasc": "7710", "jasc_title": "POWER INDICATING SYSTEM", "ata": "77", "expected_department": "ENG"}
+{"jasc": "7711", "jasc_title": "ENGINE PRESSURE RATIO (EPR)", "ata": "77", "expected_department": "ENG"}
+{"jasc": "7712", "jasc_title": "ENGINE BMEP/TORQUE INDICATING", "ata": "77", "expected_department": "ENG"}
+{"jasc": "7713", "jasc_title": "MANIFOLD PRESSURE (MP) INDICATING", "ata": "77", "expected_department": "ENG"}
+{"jasc": "7714", "jasc_title": "ENGINE RPM INDICATING SYSTEM", "ata": "77", "expected_department": "ENG"}
+{"jasc": "7720", "jasc_title": "ENGINE TEMP. INDICATING SYSTEM", "ata": "77", "expected_department": "ENG"}
+{"jasc": "7721", "jasc_title": "CYLINDER HEAD TEMP (CHT) INDICATING", "ata": "77", "expected_department": "ENG"}
+{"jasc": "7722", "jasc_title": "ENG. EGT/TIT INDICATING SYSTEM", "ata": "77", "expected_department": "ENG"}
+{"jasc": "7730", "jasc_title": "ENGINE IGNITION ANALYZER SYSTEM", "ata": "77", "expected_department": "ENG"}
+{"jasc": "7731", "jasc_title": "ENGINE IGNITION ANALYZER", "ata": "77", "expected_department": "ENG"}
+{"jasc": "7732", "jasc_title": "ENGINE VIBRATION ANALYZER", "ata": "77", "expected_department": "ENG"}
+{"jasc": "7740", "jasc_title": "ENGINE INTEGRATED INSTRUMENT SYSTEM", "ata": "77", "expected_department": "ENG"}
+{"jasc": "7797", "jasc_title": "ENGINE INDICATING SYSTEM WIRING", "ata": "77", "expected_department": "ENG"}
+{"jasc": "7800", "jasc_title": "ENGINE EXHAUST SYSTEM", "ata": "78", "expected_department": "ENG"}
+{"jasc": "7810", "jasc_title": "ENGINE COLLECTOR/TAILPIPE/NOZZLE", "ata": "78", "expected_department": "ENG"}
+{"jasc": "7820", "jasc_title": "ENGINE NOISE SUPPRESSOR", "ata": "78", "expected_department": "ENG"}
+{"jasc": "7830", "jasc_title": "THRUST REVERSER", "ata": "78", "expected_department": "ENG"}
+{"jasc": "7897", "jasc_title": "ENGINE EXHAUST SYSTEM WIRING", "ata": "78", "expected_department": "ENG"}
+{"jasc": "7900", "jasc_title": "ENGINE OIL SYSTEM (AIRFRAME)", "ata": "79", "expected_department": "ENG"}
+{"jasc": "7910", "jasc_title": "ENGINE OIL STORAGE (AIRFRAME)", "ata": "79", "expected_department": "ENG"}
+{"jasc": "7920", "jasc_title": "ENGINE OIL DISTRIBUTION (AIRFRAME)", "ata": "79", "expected_department": "ENG"}
+{"jasc": "7921", "jasc_title": "ENGINE OIL COOLER", "ata": "79", "expected_department": "ENG"}
+{"jasc": "7922", "jasc_title": "ENGINE OIL TEMP. REGULATOR", "ata": "79", "expected_department": "ENG"}
+{"jasc": "7923", "jasc_title": "ENGINE OIL SHUTOFF VALVE", "ata": "79", "expected_department": "ENG"}
+{"jasc": "7930", "jasc_title": "ENGINE OIL INDICATING SYSTEM", "ata": "79", "expected_department": "ENG"}
+{"jasc": "7931", "jasc_title": "ENGINE OIL PRESSURE", "ata": "79", "expected_department": "ENG"}
+{"jasc": "7932", "jasc_title": "ENGINE OIL QUANTITY", "ata": "79", "expected_department": "ENG"}
+{"jasc": "7933", "jasc_title": "ENGINE OIL TEMPERATURE", "ata": "79", "expected_department": "ENG"}
+{"jasc": "7997", "jasc_title": "ENGINE OIL SYSTEM WIRING", "ata": "79", "expected_department": "ENG"}
+{"jasc": "8000", "jasc_title": "ENGINE STARTING SYSTEM", "ata": "80", "expected_department": "ENG"}
+{"jasc": "8010", "jasc_title": "ENGINE CRANKING", "ata": "80", "expected_department": "ENG"}
+{"jasc": "8011", "jasc_title": "ENGINE STARTER", "ata": "80", "expected_department": "ENG"}
+{"jasc": "8012", "jasc_title": "ENGINE START VALVES/CONTROLS", "ata": "80", "expected_department": "ENG"}
+{"jasc": "8097", "jasc_title": "ENGINE STARTING SYSTEM WIRING", "ata": "80", "expected_department": "ENG"}
+{"jasc": "8100", "jasc_title": "EXHAUST TURBINE SYSTEM (RECIP)", "ata": "81", "expected_department": null}
+{"jasc": "8110", "jasc_title": "POWER RECOVERY TURBINE (RECIP)", "ata": "81", "expected_department": null}
+{"jasc": "8120", "jasc_title": "EXHAUST TURBOCHARGER", "ata": "81", "expected_department": null}
+{"jasc": "8197", "jasc_title": "TURBOCHARGING SYSTEM WIRING", "ata": "81", "expected_department": null}
+{"jasc": "8200", "jasc_title": "WATER INJECTION SYSTEM", "ata": "82", "expected_department": null}
+{"jasc": "8297", "jasc_title": "WATER INJECTION SYSTEM WIRING", "ata": "82", "expected_department": null}
+{"jasc": "8300", "jasc_title": "ACCESSORY GEARBOXES", "ata": "83", "expected_department": null}
+{"jasc": "8397", "jasc_title": "ACCESSORY GEARBOX SYSTEM WIRING", "ata": "83", "expected_department": null}
+{"jasc": "8500", "jasc_title": "ENGINE (RECIPROCATING)", "ata": "85", "expected_department": null}
+{"jasc": "8510", "jasc_title": "RECIPROCATING ENGINE FRONT SECTION", "ata": "85", "expected_department": null}
+{"jasc": "8520", "jasc_title": "RECIPROCATING ENGINE POWER SECTION", "ata": "85", "expected_department": null}
+{"jasc": "8530", "jasc_title": "RECIPROCATING ENGINE CYLINDER SECTION", "ata": "85", "expected_department": null}
+{"jasc": "8540", "jasc_title": "RECIPROCATING ENGINE REAR SECTION", "ata": "85", "expected_department": null}
+{"jasc": "8550", "jasc_title": "RECIPROCATING ENGINE OIL SYSTEM", "ata": "85", "expected_department": null}
+{"jasc": "8560", "jasc_title": "RECIPROCATING ENGINE SUPERCHARGER", "ata": "85", "expected_department": null}
+{"jasc": "8570", "jasc_title": "RECIPROCATING ENGINE LIQUID COOLING", "ata": "85", "expected_department": null}
+{"jasc": "8597", "jasc_title": "RECIPROCATING ENGINE SYSTEM WIRING", "ata": "85", "expected_department": null}

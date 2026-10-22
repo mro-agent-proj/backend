@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""data/eval 평가셋을 실제 스택(backend + MCP + AI 서버)에 보내 결과를 채점합니다.
+"""data/eval/scenario 평가셋을 실제 스택(backend + MCP + AI 서버)에 보내 결과를 채점합니다.
 
 사용:
-  python3 scripts/eval.py                       # 시나리오 23건 + 접수 검증 6건
-  python3 scripts/eval.py --only S01,S10,V2     # 일부만
-  python3 scripts/eval.py --base-url http://127.0.0.1:8080 --out data/eval/results/run.json
+  python3 scripts/scenario_eval.py                       # 시나리오 23건 + 접수 검증 6건
+  python3 scripts/scenario_eval.py --only S01,S10,V2     # 일부만
+  python3 scripts/scenario_eval.py --base-url http://127.0.0.1:8080 --out data/eval/scenario/results/run.json
 
 backend를 AI_MODE=rabbit으로 띄우고 MCP 두 개와 AI 서버가 떠 있어야 합니다(mock이면 키워드 판단 결과가 채점됩니다).
 실행마다 실제 요청이 DB에 쌓이고 OpenAI 호출 비용이 듭니다. 표준 라이브러리만 씁니다.
@@ -19,7 +19,7 @@ import urllib.request
 from datetime import datetime
 from pathlib import Path
 
-EVAL_DIR = Path(__file__).resolve().parent.parent / "data" / "eval"
+EVAL_DIR = Path(__file__).resolve().parent.parent / "data" / "eval" / "scenario"
 PASSWORD = "test1234"
 ADMIN = "admin@mro.test"  # trace(판단 경로·근거)는 관리자만 조회
 REPORTER = {"KAL": "reporter1@kal.test", "AAR": "reporter1@aar.test", "JNA": "reporter1@jna.test"}
@@ -126,7 +126,7 @@ def main():
     ap.add_argument("--base-url", default="http://127.0.0.1:8080")
     ap.add_argument("--only", help="쉼표로 구분한 ID (예: S01,S10,V2)")
     ap.add_argument("--timeout", type=int, default=300, help="요청당 최대 대기(초), backend 큐 TTL과 같게")
-    ap.add_argument("--out", type=Path, help="결과 JSON 경로 (기본: data/eval/results/<시각>.json)")
+    ap.add_argument("--out", type=Path, help="결과 JSON 경로 (기본: data/eval/scenario/results/<시각>.json)")
     args = ap.parse_args()
 
     only = set(args.only.split(",")) if args.only else None

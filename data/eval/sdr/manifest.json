@@ -1,0 +1,49 @@
+{
+  "built_on": "2026-10-22",
+  "seed": 20261022,
+  "source": [
+    {
+      "file": "SDR-2019.csv",
+      "url": "https://external.apic4e.faa.gov/sdrs/retrieve/SDR-2019.csv",
+      "sha256": "a337b11f37e9b3591330aab564f7a2813a2d2990c150935654ef7c03c0f5ebfd"
+    },
+    {
+      "file": "SDR-2020.csv",
+      "url": "https://external.apic4e.faa.gov/sdrs/retrieve/SDR-2020.csv",
+      "sha256": "2c0714d4bf88ed0fec9706f5f960b55096c29ce251be91c7871155242caed3c5"
+    }
+  ],
+  "filters": {
+    "aircraft": "AIRBUS A319/A320/A321, model_key가 corpus에 있는 기종",
+    "label": "JASC가 jasc_codes에 있고 ATA(앞 두 자리)가 부서에 매핑되는 것",
+    "leakage": "corpus와 OperatorControlNumber 또는 원문이 같은 것 제외, 원문 중복 제외",
+    "query": "매뉴얼·장 참조(AMM 32-41-00, ATA 32 등)를 지운 원문, 40~600자"
+  },
+  "pool_size": 14315,
+  "dropped": {
+    "duplicate": 694,
+    "in_corpus": 270,
+    "length": 341,
+    "model_not_in_corpus": 38,
+    "no_department": 3
+  },
+  "per_department": {
+    "search": 50,
+    "triage": 25,
+    "department": 25
+  },
+  "evidence_pack": "corpus에서 같은 기종·단어 OR 전문검색(rag-mcp R02 explore와 같은 조건) 상위 5건",
+  "translation": {
+    "model": "gpt-5.4-mini",
+    "fields": [
+      "symptom_en",
+      "symptom_ko"
+    ]
+  },
+  "counts": {
+    "search": 400,
+    "triage": 200,
+    "department": 200,
+    "jasc_to_department": 548
+  }
+}
