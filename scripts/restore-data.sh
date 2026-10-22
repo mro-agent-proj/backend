@@ -5,3 +5,4 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 bash scripts/rag-restore.sh
 bash scripts/tech-restore.sh
+bash scripts/sdr-embed-restore.sh
