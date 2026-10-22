@@ -57,7 +57,7 @@ pnpm dev
 
 ```bash
 docker compose up -d postgres rabbitmq
-./gradlew bootRun                # local 프로파일: 빈 DB면 seed/*.csv 적재
+./gradlew bootRun                # local 프로파일: 빈 DB면 data/seed/*.csv 적재
 ./scripts/restore-data.sh        # (처음 한 번) RAG·기술자료 복원, 약 20초
 ```
 
@@ -68,7 +68,7 @@ docker compose up -d postgres rabbitmq
 
 ## 계정과 시드 데이터
 
-시드 계정 비밀번호는 모두 `test1234`입니다(`seed/users.csv`).
+시드 계정 비밀번호는 모두 `test1234`입니다(`data/seed/users.csv`).
 
 | 역할 | 계정 |
 | --- | --- |
@@ -78,12 +78,13 @@ docker compose up -d postgres rabbitmq
 
 신고자는 `POST /api/v1/auth/signup`으로 직접 가입할 수도 있습니다. 정비팀·관리자 계정은 시드로만 만듭니다.
 
-| 시드 | 내용 |
+| `data/seed/` | 내용 |
 | --- | --- |
 | `departments.csv` | 정비 부서 8개와 담당 ATA. 항전 AVI, 객실 CAB, 전기 ELE, 엔진 ENG, 비행 조종 FCS(ATA 27), 유압·착륙장치 HYD, 구조 STR, 기계 계통 SYS |
 | `airlines.csv` / `aircraft.csv` | 항공사 3곳, A320 계열 기체 20대 (HL7720은 운용 중지) |
 | `maintenance_history.csv` | 수리이력 1,577건 (FAA SDR 실제 결함을 한국어로 다시 쓴 목업, 경님 데이터 + ATA 27 78건) |
-| `scenarios.md` | AI 경로 시나리오 S01~S23(기대 경로·부서·근거 이력)과 접수 검증 V1~V6 |
+
+평가셋은 `data/eval/`에 있습니다: `scenarios.md`(AI 경로 S01~S23의 기대 경로·부서·근거 이력, 접수 검증 V1~V6), 같은 내용의 `scenarios.jsonl`·`validation.jsonl`, 실제 스택에 보내 채점하는 `scripts/eval.py`. 자세한 내용은 [data/eval/README.md](data/eval/README.md).
 
 계정 시드는 임시 데이터이며 주영님 데이터로 교체 예정입니다.
 
@@ -143,6 +144,14 @@ MCP 서버는 조회 전용 계정으로 DB를 읽기만 합니다. business-mcp
 
 DB 구조와 데이터 적재는 백엔드가 책임집니다. 스키마 변경은 `src/main/resources/db/migration`에 새 Flyway 파일을 추가해서만 합니다.
 
+```
+data/
+├── seed/     git   업무 시드 CSV (항공사·기체·부서·계정·수리이력)
+├── eval/     git   평가셋 (시나리오 23건 + 접수 검증 6건), 결과 results/는 git 제외
+├── rag/      제외  RAG·기술자료 전달본 (.dump), 통합 레포 Release로 받음
+└── source/   제외  DB 원문을 CSV로 뽑은 것 (확인·공유용), 통합 레포 Release로 받음
+```
+
 | 단계 | 내용 |
 | --- | --- |
 | Flyway V1·V2 | 업무 테이블 (요청·배정·검토·기체·수리이력 등) |
@@ -150,11 +159,11 @@ DB 구조와 데이터 적재는 백엔드가 책임집니다. 스키마 변경�
 | Flyway V4 | 조회 전용 계정 권한: `mro_reader`(rag-mcp, RAG 테이블), `mro_business_reader`(business-mcp, 기체·수리이력·부서) |
 | Flyway V5 | R04 기술자료 테이블 3개 (경님 전달본 SQL 그대로) |
 | Flyway V6 | `mro_business_reader`에 `repair_requests` 확인용 열 8개 |
-| SeedLoader | `seed/*.csv` (local 프로파일, users 테이블이 비어 있을 때만) |
+| SeedLoader | `data/seed/*.csv` (local 프로파일, users 테이블이 비어 있을 때만) |
 | RAG 데이터 | 전달본 `data/rag/2026-10-21-rag-v1/` → `scripts/rag-restore.sh`. SDR 71,741건, 근거 107,137건, 임베딩 31,678개 |
 | 기술자료 (R04) | 전달본 `data/rag/mro-tech-handoff-20261021-v1/` → `scripts/tech-restore.sh`. Airbus Safety First 61편, 조각·임베딩 496개 |
 
-데이터 전달본(RAG 약 124MB, 기술자료 약 1MB)은 git에 없습니다. 팀 공유 드라이브에서 받아 `data/rag/` 아래에 두세요. `scripts/restore-data.sh`가 둘 다 복원하며(compose에서는 `rag-restore` 서비스가 자동 실행), 전달본이 없으면 경고만 남기고 건너뜁니다.
+데이터 전달본(RAG 약 124MB, 기술자료 약 1MB)은 git에 없습니다. [통합 레포](https://github.com/mro-agent-proj/mro-agent-integration)의 `scripts/fetch-data.sh`로 받으면 `data/rag/`(전달본)와 `data/source/`(DB 원문 CSV, 확인용)에 풀립니다. `scripts/restore-data.sh`가 둘 다 복원하며(compose에서는 `rag-restore` 서비스가 자동 실행), 전달본이 없으면 경고만 남기고 건너뜁니다.
 
 - 복원 전 체크섬·스키마 호환·Flyway 적용 여부를 확인하고, 테이블이 모두 비어 있을 때만 복원한 뒤 `verify.sql`로 검증합니다.
 - 이미 같은 데이터가 있으면 건너뛰고, 일부만 차 있으면 아무것도 지우지 않고 중단합니다.

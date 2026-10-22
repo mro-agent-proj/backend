@@ -4,7 +4,9 @@
 .idea
 .vscode
 build
-data
+data/rag
+data/source
+data/eval
 docker
 scripts
 *.md

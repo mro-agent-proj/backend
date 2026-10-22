@@ -1,4 +1,4 @@
-# ./gradlew bootRun 기본 프로파일. 빈 DB면 seed/*.csv를 적재하고, AI 서버 대신 MockAiServer가 큐를 소비합니다.
+# ./gradlew bootRun 기본 프로파일. 빈 DB면 data/seed/*.csv를 적재하고, AI 서버 대신 MockAiServer가 큐를 소비합니다.
 mro:
   ai:
     mode: ${AI_MODE:mock}

@@ -10,8 +10,10 @@ out/
 # 팀 내부 자료
 *.png
 
-# RAG 데이터 덤프 등 git에 넣지 않는 대용량 데이터
-/data/
+# data/ 중 seed·eval은 git에 두고, 대용량 전달본·원문 추출본만 뺍니다 (통합 레포 Release로 배포)
+/data/rag/
+/data/source/
+/data/eval/results/
 
 # VS Code Java 빌드 결과물
 bin/
