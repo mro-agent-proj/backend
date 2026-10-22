@@ -56,14 +56,14 @@ class DatabaseSchemaTest extends IntegrationTestSupport {
         assertThat(canSelect("mro_business_reader", "public.maintenance_history")).isTrue();
         assertThat(canSelect("mro_business_reader", "public.departments")).isTrue();
         assertThat(canSelect("mro_business_reader", "public.users")).isFalse();
-        // repair_requests는 테이블 전체가 아니라 B01 확인용 열만 (V6)
+        // 접수·실행 범위는 내부 테이블이 아니라 AI용 뷰로만 읽는다 (V9, V6 열 권한 대체)
+        assertThat(canSelect("mro_business_reader", "public.agent_request_context")).isTrue();
+        assertThat(canSelect("mro_business_reader", "public.agent_run_context")).isTrue();
         assertThat(canSelect("mro_business_reader", "public.repair_requests")).isFalse();
-        for (String column : new String[]{"id", "tail_number", "aircraft_model", "airline_code", "symptom_text",
-                "status", "created_at", "version"}) {
-            assertThat(canSelectColumn("mro_business_reader", "public.repair_requests", column)).as(column).isTrue();
+        assertThat(canSelect("mro_business_reader", "public.rag_request_contexts")).isFalse();
+        for (String column : new String[]{"id", "tail_number", "status", "version", "reporter_id", "summary"}) {
+            assertThat(canSelectColumn("mro_business_reader", "public.repair_requests", column)).as(column).isFalse();
         }
-        assertThat(canSelectColumn("mro_business_reader", "public.repair_requests", "reporter_id")).isFalse();
-        assertThat(canSelectColumn("mro_business_reader", "public.repair_requests", "summary")).isFalse();
         assertThat(canSelect("mro_business_reader", "public.sdr_cases")).isFalse();
         assertThat(canSelect("mro_business_reader", "public.tech_chunks")).isFalse();
     }

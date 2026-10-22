@@ -167,9 +167,10 @@ data/
 | Flyway V3 | RAG 테이블 10개 (agent 레포 제공 SQL 그대로) |
 | Flyway V4 | 조회 전용 계정 권한: `mro_reader`(rag-mcp, RAG 테이블), `mro_business_reader`(business-mcp, 기체·수리이력·부서) |
 | Flyway V5 | R04 기술자료 테이블 3개 (경님 전달본 SQL 그대로) |
-| Flyway V6 | `mro_business_reader`에 `repair_requests` 확인용 열 8개 |
+| Flyway V6 | `mro_business_reader`에 `repair_requests` 확인용 열 8개 (V9에서 뷰로 대체) |
 | Flyway V7 | R02 하이브리드용 SDR 임베딩 `rag.sdr_embeddings` (OpenAI text-embedding-3-large, 1024차원) |
 | Flyway V8 | AMM 의미 검색 테이블 3개(`amm_chunks`, `amm_chunk_references`, `rag.amm_embeddings`) 제거, 기술자료 임베딩을 OpenAI 1024차원으로 교체. AMM은 판단 근거가 아니라 배정 후 참고 정보 |
+| Flyway V9 | business-mcp용 AI 뷰 `agent_request_context`(접수 내용·상태·버전), `agent_run_context`(실행별 검색 범위). `mro_business_reader`는 이 뷰만 읽고, V6의 `repair_requests` 열 권한은 회수 |
 | SeedLoader | `data/seed/*.csv` (local 프로파일, users 테이블이 비어 있을 때만) |
 | RAG 데이터 | 전달본 `data/rag-dump/sdr-jasc-amm_v2/` → `scripts/rag-restore.sh`. SDR 71,741건, AMM 참조 35,396건, 근거 107,137건 (v1 전달본은 V8 이후 복원 불가) |
 | 기술자료 (R04) | 전달본 `data/rag-dump/airbus-safety-first_v2/` → `scripts/tech-restore.sh`. Airbus Safety First 61편, 조각 496개, OpenAI 임베딩 496개 |
