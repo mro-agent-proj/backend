@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# R04 기술자료(경님 전달본: Airbus Safety First) 초기 복원. 전달본 RESTORE.md 규칙을 따릅니다.
+# R04 기술자료(Airbus Safety First) 복원. v2: 문서·조각은 경님 tech-v1 그대로, 임베딩은 OpenAI 1024차원(Flyway V8).
 #
-#   ./scripts/tech-restore.sh [패키지 폴더]     # 기본: data/rag-dump/airbus-safety-first_v1
+#   ./scripts/tech-restore.sh [패키지 폴더]     # 기본: data/rag-dump/airbus-safety-first_v2
 #
 # - 전달본이 없으면 경고만 남기고 건너뜁니다.
 # - 테이블 3개가 모두 비어 있을 때만 복원합니다. 이미 같은 데이터가 있으면 검증 후 건너뜁니다.
@@ -13,7 +13,7 @@ cd "$(dirname "$0")/.."
 LOG_TAG=tech-restore
 source scripts/lib/restore-common.sh
 
-PACKAGE_DIR="${1:-data/rag-dump/airbus-safety-first_v1}"
+PACKAGE_DIR="${1:-data/rag-dump/airbus-safety-first_v2}"
 if [ ! -d "$PACKAGE_DIR" ]; then
     log "경고: 전달본이 없어 복원을 건너뜁니다 ($PACKAGE_DIR). 기술자료(R04)는 미준비 상태입니다."
     exit 0
@@ -39,8 +39,9 @@ sync_departments() {
 log "1/6 파일 무결성 확인 (SHA256SUMS)"
 check_sums "$PACKAGE_DIR"
 
-log "2/6 스키마 호환 확인 (전달본 V5 = Flyway V5)"
+log "2/6 스키마 호환 확인 (전달본 V5·V8 = Flyway V5·V8)"
 check_schema "$PACKAGE_DIR/V5__rag_tech_docs.sql" src/main/resources/db/migration/V5__rag_tech_docs.sql 5
+check_schema "$PACKAGE_DIR/V8__drop_amm_semantic_openai_tech.sql" src/main/resources/db/migration/V8__drop_amm_semantic_openai_tech.sql 8
 
 log "3/6 현재 기술자료 테이블 상태 확인"
 count_state public.tech_documents public.tech_chunks rag.tech_embeddings

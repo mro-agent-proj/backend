@@ -22,7 +22,7 @@ class DatabaseSchemaTest extends IntegrationTestSupport {
         assertThat(jdbc.queryForObject("select count(*) from pg_extension where extname = 'vector'", Integer.class))
                 .isEqualTo(1);
         for (String table : new String[]{"public.knowledge_releases", "public.jasc_codes", "public.sdr_cases",
-                "public.amm_references", "public.evidence", "public.rag_request_contexts", "rag.amm_embeddings",
+                "public.amm_references", "public.evidence", "public.rag_request_contexts",
                 "public.tech_documents", "public.tech_chunks", "rag.tech_embeddings", "rag.sdr_embeddings"}) {
             assertThat(jdbc.queryForObject("select to_regclass(?) is not null", Boolean.class, table))
                     .as(table).isTrue();
@@ -30,9 +30,18 @@ class DatabaseSchemaTest extends IntegrationTestSupport {
     }
 
     @Test
+    void AMM_의미검색_테이블은_V8에서_제거된다() {
+        for (String table : new String[]{"public.amm_chunks", "public.amm_chunk_references", "rag.amm_embeddings"}) {
+            assertThat(jdbc.queryForObject("select to_regclass(?) is null", Boolean.class, table)).as(table).isTrue();
+        }
+        assertThat(jdbc.queryForObject(
+                "select format_type(atttypid, atttypmod) from pg_attribute where attrelid = 'rag.tech_embeddings'::regclass and attname = 'embedding'",
+                String.class)).isEqualTo("vector(1024)");
+    }
+
+    @Test
     void rag_mcp_계정은_RAG_테이블만_읽는다() {
         assertThat(canSelect("mro_reader", "public.sdr_cases")).isTrue();
-        assertThat(canSelect("mro_reader", "rag.amm_embeddings")).isTrue();
         assertThat(canSelect("mro_reader", "public.tech_chunks")).isTrue();
         assertThat(canSelect("mro_reader", "rag.tech_embeddings")).isTrue();
         assertThat(canSelect("mro_reader", "rag.sdr_embeddings")).isTrue();
