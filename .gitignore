@@ -17,3 +17,6 @@ out/
 
 # VS Code Java 빌드 결과물
 bin/
+
+# Python 캐시 (scripts/eval.py)
+__pycache__/
