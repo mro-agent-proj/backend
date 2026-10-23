@@ -1,0 +1,39 @@
+technician_id,department_code,name,title,shift,on_duty,available,note
+T-AVI-01,AVI,류시온,팀장,주간,true,true,
+T-AVI-02,AVI,석가온,선임 정비사,주간,true,true,
+T-AVI-03,AVI,진은재,정비사,주간,true,false,작업 중
+T-AVI-04,AVI,이서율,정비사,주간,true,true,
+T-AVI-05,AVI,김도현,정비사,야간,false,false,
+T-ELE-01,ELE,강민재,팀장,주간,true,true,
+T-ELE-02,ELE,배수아,선임 정비사,주간,true,false,작업 중
+T-ELE-03,ELE,신동하,정비사,주간,true,true,
+T-ELE-04,ELE,유하람,정비사,야간,false,false,
+T-ENG-01,ENG,정우진,팀장,주간,true,true,
+T-ENG-02,ENG,차지원,선임 정비사,주간,true,true,
+T-ENG-03,ENG,구본혁,정비사,주간,true,false,작업 중
+T-ENG-04,ENG,탁나래,정비사,주간,true,true,
+T-ENG-05,ENG,박지유,정비사,야간,false,false,
+T-ENG-06,ENG,최윤호,정비사,야간,false,false,
+T-HYD-01,HYD,황선우,팀장,주간,true,false,작업 중
+T-HYD-02,HYD,엄도경,선임 정비사,주간,true,false,작업 중
+T-HYD-03,HYD,마준서,정비사,주간,true,true,
+T-HYD-04,HYD,한예준,정비사,야간,false,false,
+T-HYD-05,HYD,고은채,정비사,야간,false,false,
+T-SYS-01,SYS,권태오,팀장,주간,true,true,
+T-SYS-02,SYS,임채원,선임 정비사,주간,true,false,작업 중
+T-SYS-03,SYS,백승우,정비사,주간,true,true,
+T-SYS-04,SYS,노예린,정비사,야간,false,false,
+T-SYS-05,SYS,양시후,정비사,야간,false,false,
+T-STR-01,STR,한도윤,팀장,주간,true,false,작업 중
+T-STR-02,STR,서지호,선임 정비사,주간,true,false,작업 중
+T-STR-03,STR,윤하준,정비사,주간,true,false,작업 중
+T-STR-04,STR,장민서,정비사,야간,false,false,
+T-STR-05,STR,오세린,정비사,야간,false,false,
+T-CAB-01,CAB,송다인,팀장,주간,true,true,
+T-CAB-02,CAB,문지안,선임 정비사,주간,true,true,
+T-CAB-03,CAB,조현우,정비사,주간,false,false,휴가
+T-CAB-04,CAB,홍서진,정비사,야간,false,false,
+T-FCS-01,FCS,전하은,팀장,주간,true,true,
+T-FCS-02,FCS,도민규,선임 정비사,주간,true,true,
+T-FCS-03,FCS,채윤슬,정비사,주간,true,false,작업 중
+T-FCS-04,FCS,표건우,정비사,야간,false,false,

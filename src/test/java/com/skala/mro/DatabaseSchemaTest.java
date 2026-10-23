@@ -66,6 +66,9 @@ class DatabaseSchemaTest extends IntegrationTestSupport {
         }
         assertThat(canSelect("mro_business_reader", "public.sdr_cases")).isFalse();
         assertThat(canSelect("mro_business_reader", "public.tech_chunks")).isFalse();
+        // 인원 현황판(V10)은 화면 전용이라 MCP 계정 모두 읽지 못한다
+        assertThat(canSelect("mro_business_reader", "public.technicians")).isFalse();
+        assertThat(canSelect("mro_reader", "public.technicians")).isFalse();
     }
 
     @Test
