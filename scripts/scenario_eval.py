@@ -121,15 +121,23 @@ def run_scenario(api, case, timeout):
     statuses = [h["to_status"] for h in trace.get("history", []) if h["to_status"] != "QUEUED"]
     final = next((a.get("output") for a in reversed(trace["assessments"])
                   if a.get("stage") == "FINAL"), None)
-    if not isinstance(final, dict) or not isinstance(final.get("evidence"), list):
-        return trace_error("FINAL 판단 또는 근거 목록 누락·형식 오류")
-    if any(not isinstance(e, dict) or not isinstance(e.get("ref_id"), str) for e in final["evidence"]):
+    if not isinstance(final, dict) or final.get("outcome") not in ("ASSIGN", "HUMAN_REVIEW"):
+        return trace_error("FINAL 판단 누락·형식 오류")
+    # AI human_payload는 정상 HUMAN_REVIEW 완료 시 evidence 필드를 생략한다.
+    final_evidence = (final.get("evidence", [])
+                      if body["status"] == "HUMAN_REVIEW" and final["outcome"] == "HUMAN_REVIEW"
+                      else final.get("evidence"))
+    if not isinstance(final_evidence, list):
+        return trace_error("FINAL 근거 목록 누락·형식 오류")
+    if any(not isinstance(e, dict) or not isinstance(e.get("ref_id"), str) for e in final_evidence):
         return trace_error("FINAL 근거 항목 형식 오류")
-    cited = [e["ref_id"] for e in final["evidence"]]
+    cited = [e["ref_id"] for e in final_evidence]
     path = ("HUMAN_REVIEW" if body["status"] == "HUMAN_REVIEW"
             else "INVESTIGATE" if "INVESTIGATING" in statuses else "DIRECT")
 
     trap_hit = sorted(set(cited) & set(exp.get("must_not_cite", [])))
+    if body["status"] == "ASSIGNED" and final["outcome"] != "ASSIGN":
+        return trace_error("배정 상태와 FINAL outcome 불일치")
     if exp["status"] == "ASSIGNED":
         correct = body["status"] == "ASSIGNED" and body["assigned_department"] in acceptable and not trap_hit
     else:

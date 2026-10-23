@@ -42,7 +42,8 @@ class ScoringTests(unittest.TestCase):
             (500, {"error": "unavailable"}), (200, None), (200, {}),
             (200, {"history": [], "assessments": []}),
             (200, {"history": [], "assessments": [{"stage": "FINAL", "output": {}}]}),
-            (200, {"history": [], "assessments": [{"stage": "FINAL", "output": {"evidence": [{}]}}]}),
+            (200, {"history": [], "assessments": [{"stage": "FINAL", "output": {"outcome": "ASSIGN"}}]}),
+            (200, {"history": [], "assessments": [{"stage": "FINAL", "output": {"outcome": "ASSIGN", "evidence": [{}]}}]}),
             (200, OSError("connection failed")), (200, ValueError("invalid JSON")),
         ]:
             with self.subTest(status=status, trace=trace):
@@ -59,10 +60,20 @@ class ScoringTests(unittest.TestCase):
         for evidence, correct in [([], True), ([{"ref_id": "MH-OK"}], True), ([{"ref_id": "MH-TRAP"}], False)]:
             with self.subTest(evidence=evidence):
                 trace = {"history": [{"to_status": "ASSIGNED"}], "assessments": [
-                    {"stage": "FINAL", "output": {"evidence": evidence}}]}
+                    {"stage": "FINAL", "output": {"outcome": "ASSIGN", "evidence": evidence}}]}
                 result = self.run_with_trace(200, trace)
                 self.assertEqual(result["correct"], correct)
                 self.assertNotIn("evaluation_error", result)
+
+    def test_normal_human_review_final_may_omit_evidence(self):
+        trace = {"history": [{"to_status": "HUMAN_REVIEW"}], "assessments": [
+            {"stage": "FINAL", "output": {"outcome": "HUMAN_REVIEW",
+             "review_reason": "INSUFFICIENT_EVIDENCE", "summary": "Needs human review"}}]}
+        result = self.run_with_trace(200, trace, status="HUMAN_REVIEW")
+        self.assertTrue(result["correct"])
+        self.assertEqual(result["cited"], [])
+        self.assertNotIn("evaluation_error", result)
+        self.assertFalse(self.run_with_trace(200, trace)["correct"])
 
     def test_precision_includes_expected_human_assignments_and_separates_traps(self):
         cases = [row(), row(department="ENG", correct=False), row(correct=False, trap=True),
