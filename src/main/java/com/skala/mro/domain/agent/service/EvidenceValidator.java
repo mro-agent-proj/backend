@@ -13,8 +13,9 @@ import org.springframework.stereotype.Component;
  *
  * <ul>
  *   <li>HISTORY {@code MH-*}: 수리이력에 있고, 그 기체가 요청과 같은 모델 (다른 기체 유사 사례 허용)</li>
- *   <li>SDR {@code EV-SDR-*} / AMM {@code EV-AMM-*}: READY release의 evidence에 있고, 종류가 맞고,
- *       원본 SDR의 model_key가 요청 모델과 같음</li>
+ *   <li>SDR {@code EV-SDR-*}: READY release의 evidence에 있고, 종류가 맞고, 원본 SDR의 model_key가 요청 모델과 같음</li>
+ *   <li>AMM {@code EV-AMM-*}: 배정 근거로 인정하지 않음. AMM은 SDR 원문의 참조번호라 배정 후 참고 정보
+ *       ({@code reference_amm})로만 전달합니다 (AI 서버 정책과 같음).</li>
  *   <li>DOC {@code EV-DOC-*}: R04 기술자료 조각(tech_chunks)에 있음. 특정 모델 자료가 아니므로 존재만 확인</li>
  * </ul>
  */
@@ -54,10 +55,13 @@ public class EvidenceValidator {
                 problems.add(source + " ref_id 없음");
                 continue;
             }
+            if ("AMM".equals(source)) {
+                problems.add("AMM " + refId + " (AMM은 참고 정보 reference_amm이며 배정 근거가 아님)");
+                continue;
+            }
             boolean valid = switch (source) {
                 case "HISTORY" -> exists(HISTORY_SQL, refId, aircraftModel);
                 case "SDR" -> exists(RAG_SQL, refId, "sdr", modelKey);
-                case "AMM" -> exists(RAG_SQL, refId, "derived_amm_reference", modelKey);
                 case "DOC" -> exists(DOC_SQL, refId);
                 default -> false;
             };

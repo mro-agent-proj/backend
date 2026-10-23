@@ -8,7 +8,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-/** 배정 실행 직전 근거 ID 검증 (MH-*: 수리이력, EV-SDR·AMM: RAG evidence, EV-DOC: R04 기술자료). */
+/** 배정 실행 직전 근거 ID 검증 (MH-*: 수리이력, EV-SDR: RAG evidence, EV-DOC: R04 기술자료, EV-AMM: 근거 아님). */
 class EvidenceValidationTest extends IntegrationTestSupport {
 
     private static final UUID RELEASE = UUID.fromString("00000000-0000-0000-0000-00000000aa01");
@@ -82,13 +82,20 @@ class EvidenceValidationTest extends IntegrationTestSupport {
     }
 
     @Test
-    void 같은_모델의_수리이력_SDR_AMM_근거면_배정된다() throws Exception {
+    void 같은_모델의_수리이력_SDR_기술자료_근거면_배정된다() throws Exception {
         UUID requestId = completeWith(List.of(
                 Map.of("source", "HISTORY", "ref_id", "MH-000001"),
                 Map.of("source", "SDR", "ref_id", "EV-SDR-TEST1"),
-                Map.of("source", "AMM", "ref_id", "EV-AMM-TEST1"),
                 Map.of("source", "DOC", "ref_id", "EV-DOC-0123456789abcdef0123")));
         assertThat(requestStatus(requestId)).isEqualTo("ASSIGNED");
+    }
+
+    @Test
+    void AMM은_존재해도_배정_근거로_인정하지_않는다() throws Exception {
+        // AMM은 배정 후 참고 정보(reference_amm)다. AMM만 근거로 온 결과는 다른 생산자가 보냈더라도 배정하지 않는다.
+        UUID requestId = completeWith(List.of(Map.of("source", "AMM", "ref_id", "EV-AMM-TEST1")));
+        assertThat(requestStatus(requestId)).isEqualTo("HUMAN_REVIEW");
+        assertThat(reviewNote(requestId)).contains("AMM EV-AMM-TEST1", "참고 정보");
     }
 
     @Test
