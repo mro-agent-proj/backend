@@ -19,6 +19,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      - name: Offline evaluation scoring and dataset contract
+        run: python3 -m unittest discover -s scripts/tests -v
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

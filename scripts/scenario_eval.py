@@ -130,12 +130,15 @@ def run_validation(api, case):
 
 
 def summarize(scenarios, validations):
-    """헤드라인은 오배정률(틀린 부서로 자동 배정)과 자동 배정 정밀도. 사람 검토로 넘긴 것은 오배정이 아니라 '놓친 자동화'."""
-    pct = lambda a, b: f"{a}/{b}" + (f" ({a / b:.0%})" if b else "")
+    """전체 자동배정의 부서·근거 조건을 채점하고, 보류 적절성은 별도 판정한다."""
+    pct = lambda a, b: f"{a}/{b}" + (f" ({a / b:.1%})" if b else "")
     assign = [r for r in scenarios if r.get("expected_status") == "ASSIGNED"]
     review = [r for r in scenarios if r.get("expected_status") == "HUMAN_REVIEW"]
-    auto = [r for r in assign if r.get("status") == "ASSIGNED"]
+    auto = [r for r in scenarios if r.get("status") == "ASSIGNED"]
+    assign_auto = [r for r in assign if r.get("status") == "ASSIGNED"]
     wrong = [r for r in auto if not r["correct"]]
+    wrong_department = [r for r in assign_auto if r.get("department") not in
+                        (r.get("acceptable") or [r.get("expected_department")])]
     done = sorted(r["seconds"] for r in scenarios if "seconds" in r and not r["timed_out"])
     with_evidence = [r for r in assign if r.get("evidence_cited") is not None]
 
@@ -146,10 +149,16 @@ def summarize(scenarios, validations):
         return {k: pct(sum(r["correct"] for r in v), len(v)) for k, v in sorted(rows.items(), key=lambda kv: str(kv[0]))}
 
     return {
-        "오배정률 (틀린 부서로 자동 배정)": pct(len(wrong), len(assign)),
+        "전체 평가 통과율": pct(sum(r["correct"] for r in scenarios), len(scenarios)),
+        "오배정률 (틀린 부서로 자동 배정)": pct(len(wrong_department), len(assign)),
         "자동 배정 정밀도 (자동 배정 중 정답)": pct(len(auto) - len(wrong), len(auto)),
-        "자동 배정률 (배정 기대 문항 중)": pct(len(auto), len(assign)),
-        "부서 정답률 (배정 기대 문항 중)": pct(sum(r["correct"] for r in assign), len(assign)),
+        "자동 배정률 (전체 문항 중)": pct(len(auto), len(scenarios)),
+        "자동 배정률 (배정 기대 문항 중)": pct(len(assign_auto), len(assign)),
+        "자동 배정 평가 실패 (부서·근거·기대 상태)": len(wrong),
+        "배정 평가 통과율 (부서·근거 조건)": pct(sum(r["correct"] for r in assign), len(assign)),
+        "부서는 일치하나 금지 이력 인용": sum(not r["correct"] and bool(r.get("trap_cited"))
+            and r not in wrong_department for r in assign_auto),
+        "사람 검토 전환": sum(r.get("status") == "HUMAN_REVIEW" for r in scenarios),
         "사람 검토 재현율 (사람 검토 기대 문항 중)": pct(sum(r["correct"] for r in review), len(review)),
         "사람 검토 기대인데 자동 배정": sum(r.get("status") == "ASSIGNED" for r in review),
         "경로 일치": pct(sum(r.get("path") == r.get("expected_path") for r in scenarios), len(scenarios)),
@@ -169,7 +178,7 @@ def summarize_by_split(scenarios, validations):
     summary = summarize(scenarios, validations)
     splits = sorted({r.get("split") for r in scenarios if r.get("split")})
     if len(splits) > 1:
-        keep = ("오배정률", "자동 배정 정밀도", "자동 배정률", "부서 정답률", "사람 검토 재현율", "경로 일치", "정답 근거")
+        keep = ("전체 평가", "오배정률", "자동 배정", "배정 평가", "부서는 일치", "사람 검토", "경로 일치", "정답 근거")
         summary["split별"] = {s: {k: v for k, v in summarize([r for r in scenarios if r.get("split") == s], []).items()
                                  if k.startswith(keep)} for s in splits}
     return summary

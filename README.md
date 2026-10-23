@@ -66,7 +66,7 @@ docker compose up -d postgres rabbitmq
 - Swagger: http://localhost:8080/swagger-ui.html
 - RabbitMQ 관리 UI: http://localhost:15672 (`mro` / `mro`, DLQ 확인·재전송)
 - 헬스: http://localhost:8080/actuator/health (`ragData`가 `UNKNOWN`이면 RAG 복원 전)
-- 처음부터 다시: `docker compose down -v` (DB·큐 삭제. 시드와 RAG는 다시 올릴 때 자동 적재)
+- 기존 DB·큐 볼륨은 보존합니다. 평가 데이터 교체는 별도 평가 환경에서 수행하고, 공유 DB 갱신은 Backend 담당 절차로 처리합니다.
 
 ## 계정과 시드 데이터
 
@@ -84,11 +84,14 @@ docker compose up -d postgres rabbitmq
 | --- | --- |
 | `departments.csv` | 정비 부서 8개와 담당 ATA. 항전 AVI, 객실 CAB, 전기 ELE, 엔진 ENG, 비행 조종 FCS(ATA 27), 유압·착륙장치 HYD, 구조 STR, 기계 계통 SYS |
 | `airlines.csv` / `aircraft.csv` | 항공사 3곳, A320 계열 기체 20대 (HL7720은 운용 중지) |
-| `maintenance_history.csv` | 수리이력 1,577건 (FAA SDR 실제 결함을 한국어로 다시 쓴 목업, 경님 데이터 + ATA 27 78건) |
+| `maintenance_history_v2.csv` | 수리이력 1,600건 (SDR 기반 목업, 서비스 평가셋과 함께 버전 관리) |
 | `technicians.csv` | 정비사 목업 38명 (8개 부서, 직급·근무조·출근·작업가능). 관리자 인원 현황판 전용이며 로그인 계정이 아님. 출근하지 않은 사람은 작업가능일 수 없음 (경님 데이터) |
 
-평가셋은 `data/eval/`에 두 가지가 있습니다. 자세한 내용은 [data/eval/README.md](data/eval/README.md).
-- `scenario/` 통합 평가: AI 경로 S01~S23(기대 경로·부서·근거 이력)과 접수 검증 V1~V6. `scripts/scenario_eval.py`로 실제 스택에 보내 채점합니다.
+`SeedLoader`는 users가 이미 있으면 업무 시드를 다시 넣지 않습니다. CSV를 교체하거나 컨테이너를 재빌드해도 기존 이력은 자동 갱신되지 않습니다. 평가 전 DB의 이력 버전을 확인하고, 별도 빈 평가 DB의 최초 적재 또는 Backend 담당자의 갱신 절차를 사용하세요. 실행 설정 `mro.seed.history-file`의 기본값은 `maintenance_history_v2.csv`입니다.
+
+평가셋은 `data/eval/`에 있습니다. 자세한 내용은 [data/eval/README.md](data/eval/README.md).
+- `service/` 통합 평가: 시나리오 200건(dev 80/test 120). `scripts/scenario_eval.py --workers 1`로 실제 스택에 보내 채점합니다.
+- `scenario/`는 접수 검증 V1~V6와 과거 S01~S23 설명을 보존합니다. 과거 실행용 JSONL은 삭제됐으며 기본 평가 대상이 아닙니다.
 - `sdr/` 단위 평가: FAA 공개 SDR 2019~2020(검색 대상과 기간이 안 겹침)으로 만든 검색(R01·R02)·LLM1 분류·LLM2 부서 결정·JASC 매핑 평가셋. `scripts/build_sdr_eval.py`로 다시 만들 수 있습니다.
 
 계정 시드는 임시 데이터이며 주영님 데이터로 교체 예정입니다.
@@ -123,17 +126,17 @@ mro.agent.dlx      ── run.dead      ──▶ mro.agent.run.dlq     Spring�
 - 큐·익스체인지는 Spring이 시작할 때 선언합니다. AI 서버는 소비·발행만 합니다.
 - AI 서버가 실행 요청을 `reject(requeue=false)`하거나 5분 안에 아무도 가져가지 않으면 실행 DLQ로 가고, 요청은 사람 검토(`SYSTEM_ERROR`)로 넘어갑니다.
 - 이벤트 처리 중 형식 오류·없는 요청은 바로, 그 밖의 오류는 3회 재시도 후 이벤트 DLQ로 갑니다. 같은 `event_id`는 한 번만 반영합니다.
-- AI의 최종 판단은 백엔드가 다시 검증합니다(`AgentEventService`, `EvidenceValidator`). 없는 부서, 존재하지 않거나 기종이 다른 근거면 배정하지 않고 사람 검토(`VALIDATION_FAILED`)로 보냅니다. AI가 보낸 `RETRY_LIMIT`·`VALIDATION_FAILED` 사유는 그대로 저장합니다.
+- AI의 최종 판단은 백엔드가 다시 검증합니다(`AgentEventService`, `EvidenceValidator`). 없는 부서, 존재하지 않거나 Backend가 허용한 모델 범위 밖의 근거면 배정하지 않고 사람 검토(`VALIDATION_FAILED`)로 보냅니다. AI가 보낸 `RETRY_LIMIT`·`VALIDATION_FAILED` 사유는 그대로 저장합니다.
 
 ### MCP 위임 (토큰과 검색 범위)
 
 실행 요청마다 `McpDelegationService`가 다음을 합니다.
 
-1. `run_id`를 새로 만들고 `rag_request_contexts`에 검색 범위를 등록합니다. 시연 정책에 따라 **기종만 고정하고 운항사는 비웁니다**(KAL·AAR·JNA는 SDR 운항사가 아니기 때문).
+1. `run_id`를 새로 만들고 `rag_request_contexts`에 검색 범위와 V11 모델 허용 목록을 등록합니다. 새 정책은 동일 기본 모델·세대를 기본 검색 범위로 쓰며 추가 조사에 허용 계열 범위를 제공합니다. 운항사는 시연 정책에 따라 비웁니다(KAL·AAR·JNA는 SDR 운항사가 아님).
 2. business-mcp·rag-mcp용 토큰을 각각 서명해 RabbitMQ 헤더 `x-mro-business-token`, `x-mro-rag-token`으로 붙입니다.
    HS256, iss `mro-backend`, aud `mro-business` / `mro-rag`, 유효 10분. AI 서버는 이 토큰을 각 MCP에 `Authorization: Bearer`로 전달합니다.
 
-MCP 서버는 조회 전용 계정으로 DB를 읽기만 합니다. business-mcp는 V6로 `repair_requests`의 확인용 열 8개만 읽습니다.
+MCP 서버는 조회 전용 계정으로 DB를 읽기만 합니다. business-mcp는 V9의 `agent_request_context`·`agent_run_context` 뷰를 사용합니다. V6의 원본 테이블 열 권한은 회수됐습니다.
 
 ### 환경변수
 
@@ -154,7 +157,8 @@ DB 구조와 데이터 적재는 백엔드가 책임집니다. 스키마 변경�
 data/
 ├── seed/                       git   업무 시드 CSV (항공사·기체·부서·계정·수리이력)
 ├── eval/                       git   평가셋
-│   ├── scenario/                     통합 평가: 시나리오 23건 + 접수 검증 6건 (결과 results/는 git 제외)
+│   ├── service/                      현재 통합 평가 200건 + manifest (결과 results/는 git 제외)
+│   ├── scenario/                     접수 검증 6건 + 과거 23건 설명
 │   └── sdr/                          단위 평가: FAA SDR 기반 검색·분류·부서·매핑
 ├── rag-dump/                   제외  DB 복원용 덤프 (통합 레포 Release로 받음)
 │   ├── sdr-jasc-amm_v2/              SDR·JASC·AMM 참조·근거 (57MB, V8 이후 6개 테이블)
@@ -176,6 +180,7 @@ data/
 | Flyway V8 | AMM 의미 검색 테이블 3개(`amm_chunks`, `amm_chunk_references`, `rag.amm_embeddings`) 제거, 기술자료 임베딩을 OpenAI 1024차원으로 교체. AMM은 판단 근거가 아니라 배정 후 참고 정보 |
 | Flyway V9 | business-mcp용 AI 뷰 `agent_request_context`(접수 내용·상태·버전), `agent_run_context`(실행별 검색 범위). `mro_business_reader`는 이 뷰만 읽고, V6의 `repair_requests` 열 권한은 회수 |
 | Flyway V10 | 인원 현황판용 `technicians` 표 (새 표 1개, 기존 표 변경 없음). 화면 전용이라 MCP 계정 둘 다 권한 없음 (`DatabaseSchemaTest`로 확인) |
+| Flyway V11 | 실행별 모델 허용 목록·검색 범위 정책. 상세 계약은 `docs/MODEL_SCOPE.md` |
 | SeedLoader | `data/seed/*.csv` (local 프로파일, users 테이블이 비어 있을 때만). `technicians.csv`는 technicians 테이블이 비어 있으면 따로 적재해 이미 쓰던 DB에도 들어감 |
 | RAG 데이터 | 전달본 `data/rag-dump/sdr-jasc-amm_v2/` → `scripts/rag-restore.sh`. SDR 71,741건, AMM 참조 35,396건, 근거 107,137건 (v1 전달본은 V8 이후 복원 불가) |
 | 기술자료 (R04) | 전달본 `data/rag-dump/airbus-safety-first_v2/` → `scripts/tech-restore.sh`. Airbus Safety First 61편, 조각 496개, OpenAI 임베딩 496개 |
@@ -187,12 +192,13 @@ data/
 - 이미 같은 데이터가 있으면 건너뛰고, 일부만 차 있으면 아무것도 지우지 않고 중단합니다.
 - 기술자료 복원 마지막에 문서별 담당 부서를 현재 부서 매핑으로 다시 계산합니다(`scripts/lib/tech-departments.sql`). 부서가 바뀌면 `scripts/tech-restore.sh`만 다시 실행하면 됩니다.
 
-조회 전용 계정 비밀번호는 Postgres 볼륨을 처음 만들 때 `docker/postgres/init`이 설정합니다(`MRO_RAG_READER_PASSWORD`, `MRO_BUSINESS_READER_PASSWORD`, 기본값은 로컬 전용). 이미 볼륨이 있으면 `docker compose down -v` 후 다시 올려야 계정이 생깁니다.
+조회 전용 계정 비밀번호는 Postgres 볼륨을 처음 만들 때 `docker/postgres/init`이 설정합니다(`MRO_RAG_READER_PASSWORD`, `MRO_BUSINESS_READER_PASSWORD`, 기본값은 로컬 전용). 기존 볼륨에는 초기화 스크립트가 재실행되지 않습니다. 계정·권한 보완은 Backend 담당자가 기존 데이터를 보존하는 절차로 수행해야 하며, 계정 생성만을 위해 볼륨을 삭제하지 않습니다.
 
 ## 테스트
 
 ```bash
-./gradlew test   # Testcontainers로 Postgres·RabbitMQ를 띄움 (Docker 필요). 35개
+python3 -m unittest discover -s scripts/tests -v  # 오프라인 채점·평가셋 버전 검사
+./gradlew test   # Testcontainers로 Postgres·RabbitMQ를 띄움 (Docker 필요)
 # Postgres만 외부 DB로: TEST_DB_URL=jdbc:postgresql://localhost:5432/mro_test ./gradlew test
 ```
 
@@ -232,6 +238,6 @@ com.skala.mro
 
 ## 알려진 한계
 
-- 근거 검증은 이력이 실제로 있는지, 같은 기종인지만 봅니다. 증상과 관련 있는지는 AI 서버 쪽 검증에 맡깁니다.
-- 검색 범위는 시연 정책(기종만 고정)입니다. 항공사 × 기종으로 고정하려면 우리 항공사와 SDR 운항사 매핑을 정한 뒤 `operator_code`를 채우면 됩니다.
+- 근거의 존재·허용 모델 범위·버전 등은 Backend가 검증합니다. 증상과 근거의 의미적 관련성은 AI 서버 쪽 검토에 맡깁니다.
+- 검색 범위는 `docs/MODEL_SCOPE.md`의 시연 정책(Backend 모델 허용 목록)입니다. 항공사 × 기종으로 고정하려면 우리 항공사와 SDR 운항사 매핑을 정한 뒤 `operator_code`를 채우면 됩니다.
 - 로그인·가입 API에 시도 횟수 제한이 없습니다(Redis 도입 시 우선 과제).

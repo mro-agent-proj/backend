@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "dataset_file": "scenarios.jsonl",
+  "dataset_sha256": "98b193d282d766a2ebeb19a1532f4e66f2bda2a072acc544aa119d08555f55e6",
+  "scenario_count": 200,
+  "history_file": "maintenance_history_v2.csv",
+  "history_sha256": "eb6a050032b54f640f34d06db2248eab1a9a7ee27ec9fbfd121043ef556bfff3",
+  "history_count": 1600
+}
