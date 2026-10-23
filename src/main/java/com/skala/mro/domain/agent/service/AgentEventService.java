@@ -111,7 +111,7 @@ public class AgentEventService {
                             "AI가 제안한 부서 코드가 유효하지 않습니다: " + department);
                     return;
                 }
-                List<String> invalid = evidenceValidator.findProblems(request.getAircraftModel(),
+                List<String> invalid = evidenceValidator.findProblems(request.getId(), request.getAircraftModel(),
                         payload.get("evidence"));
                 if (!invalid.isEmpty()) {
                     workflow.updateSummary(request, summary);

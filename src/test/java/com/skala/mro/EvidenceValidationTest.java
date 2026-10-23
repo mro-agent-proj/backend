@@ -1,6 +1,7 @@
 package com.skala.mro;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ class EvidenceValidationTest extends IntegrationTestSupport {
                   title_source_file, source_payload)
                 values (gen_random_uuid(), ?, '3230', 'LANDING GEAR', 'ok', 'v', 'u', 'f', '{}')""", RELEASE);
         sdrCase(SDR_A320_214, "CASE-1", "A320214");
-        sdrCase(SDR_A321, "CASE-2", "A321272N");
+        sdrCase(SDR_A321, "CASE-2", "A330343");
         jdbc.update("""
                 insert into amm_references (id, release_id, distilled_record_id, sdr_case_uuid, source_version,
                   cited_amm_ref_raw, cited_amm_ref_normalized, reference_level, reference_start, reference_end, quote,
@@ -75,6 +76,10 @@ class EvidenceValidationTest extends IntegrationTestSupport {
         UUID requestId = submitRequest(login("reporter@kal.test"), "좌측 메인기어 유압유 누유");
         sendEvent(requestId, "COMPLETED", Map.of("outcome", "ASSIGN", "department", "HYD", "evidence", evidence));
         return requestId;
+    }
+
+    private void awaitContext(UUID requestId) {
+        await().atMost(WAIT).until(() -> jdbc.queryForObject("select count(*) from rag_request_contexts where request_id = ?", Integer.class, requestId.toString()) > 0);
     }
 
     private String reviewNote(UUID requestId) {
@@ -132,4 +137,31 @@ class EvidenceValidationTest extends IntegrationTestSupport {
         UUID requestId = completeWith(List.of(Map.of("source", "SDR", "ref_id", "EV-SDR-TEST1")));
         assertThat(requestStatus(requestId)).isEqualTo("HUMAN_REVIEW");
     }
+    @Test
+    void 허용된_계열_근거는_배정되고_만료된_컨텍스트는_거절된다() throws Exception {
+        jdbc.update("update sdr_cases set model_key = 'A321272N' where id = ?", SDR_A321);
+        UUID accepted = completeWith(List.of(Map.of("source", "SDR", "ref_id", "EV-SDR-OTHER-MODEL")));
+        assertThat(requestStatus(accepted)).isEqualTo("ASSIGNED");
+        UUID expired = submitRequest(login("reporter@kal.test"), "좌측 메인기어 누유");
+        awaitContext(expired);
+        jdbc.update("update rag_request_contexts set expires_at = now() - interval '1 second' where request_id = ?", expired.toString());
+        sendEvent(expired, "COMPLETED", Map.of("outcome", "ASSIGN", "department", "HYD", "evidence",
+                List.of(Map.of("source", "SDR", "ref_id", "EV-SDR-OTHER-MODEL"))));
+        assertThat(requestStatus(expired)).isEqualTo("HUMAN_REVIEW");
+    }
+
+    @Test
+    void 계열_확장도_운항사와_고정_JASC_범위를_우회하지_못한다() throws Exception {
+        for (String restriction : List.of("operator_code = 'OTHER'", "locked_filters = '{\"jasc_codes\":[\"2924\"]}'::jsonb",
+                "model_scope = null")) {
+            jdbc.update("update sdr_cases set model_key = 'A320232' where id = ?", SDR_A321);
+            UUID requestId = submitRequest(login("reporter@kal.test"), "좌측 메인기어 누유");
+            awaitContext(requestId);
+            jdbc.update("update rag_request_contexts set " + restriction + " where request_id = ?", requestId.toString());
+            sendEvent(requestId, "COMPLETED", Map.of("outcome", "ASSIGN", "department", "HYD", "evidence",
+                    List.of(Map.of("source", "SDR", "ref_id", "EV-SDR-OTHER-MODEL"))));
+            assertThat(requestStatus(requestId)).isEqualTo("HUMAN_REVIEW");
+        }
+    }
+
 }

@@ -31,8 +31,8 @@ public class McpDelegationService {
 
     public static final String BUSINESS_TOKEN_HEADER = "x-mro-business-token";
     public static final String RAG_TOKEN_HEADER = "x-mro-rag-token";
-    /** 요청의 검색 조건(기체·기종)은 바뀌지 않으므로 항상 1입니다. business-mcp B01도 1을 돌려줍니다. */
-    public static final int CONTEXT_VERSION = 1;
+    /** v2 adds Backend-issued model allowances; existing v1 contexts remain exact-only. */
+    public static final int CONTEXT_VERSION = 2;
     static final String ISSUER = "mro-backend";
     static final String BUSINESS_AUDIENCE = "mro-business";
     static final String RAG_AUDIENCE = "mro-rag";
@@ -88,14 +88,15 @@ public class McpDelegationService {
                 requestId, tenantId, CONTEXT_VERSION);
         jdbc.update("""
                         insert into rag_request_contexts (run_id, request_id, context_version, subject_id, tenant_id, operator_code,
-                          model_key, release_id, index_ids, mapping_revision, locked_filters, active, expires_at)
+                          model_key, release_id, index_ids, mapping_revision, locked_filters, active, expires_at, model_scope)
                         values (?, ?, ?, ?, ?, null, ?, ?,
                           (select coalesce(jsonb_agg(index_key order by index_key), '[]'::jsonb) from knowledge_indexes
                            where release_id = ? and state = 'READY'),
-                          ?, ?::jsonb, true, ?)""",
+                          ?, ?::jsonb, true, ?, ?::jsonb)""",
                 runId, requestId, CONTEXT_VERSION, subjectId(request), tenantId, modelKey(request.getAircraftModel()),
                 releaseId, releaseId, properties.mappingRevision(), NO_LOCKED_FILTERS,
-                Timestamp.from(Instant.now().plus(properties.contextTtl())));
+                Timestamp.from(Instant.now().plus(properties.contextTtl())),
+                ModelSearchScope.json(modelKey(request.getAircraftModel())));
     }
 
     private String sign(SecretKey key, String audience, RepairRequest request, String runId) {
