@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * local 프로파일에서 users 테이블이 비어 있으면 seed/*.csv를 적재합니다 (인터페이스 규약 4·5번 섹션).
+ * technicians.csv(인원 현황판)는 technicians 테이블이 비어 있을 때 따로 적재합니다.
  * 다시 적재하려면 DB를 비우세요: docker compose down -v
  */
 @Slf4j
@@ -45,16 +46,32 @@ public class SeedLoader implements ApplicationRunner {
     @Override
     @Transactional
     public void run(ApplicationArguments args) throws IOException {
-        Integer users = jdbc.queryForObject("select count(*) from users", Integer.class);
-        if (users != null && users > 0) {
-            log.info("시드 건너뜀: users 테이블에 이미 {}건이 있습니다.", users);
-            return;
-        }
         Path dir = Path.of(seedDir).toAbsolutePath().normalize();
         if (!Files.isDirectory(dir)) {
             log.warn("시드 폴더가 없습니다: {}", dir);
             return;
         }
+        Integer users = jdbc.queryForObject("select count(*) from users", Integer.class);
+        if (users != null && users > 0) {
+            log.info("시드 건너뜀: users 테이블에 이미 {}건이 있습니다.", users);
+        } else {
+            loadBase(dir);
+        }
+        // 인원 현황판(V10)은 이미 쓰던 DB에도 들어가도록 users와 따로 확인합니다.
+        Integer technicians = jdbc.queryForObject("select count(*) from technicians", Integer.class);
+        if (technicians != null && technicians == 0) {
+            // 해당 부서가 없는 DB에서도 기동이 멈추지 않게 부서가 있는 행만 넣습니다.
+            load(dir, "technicians.csv", r -> jdbc.update("""
+                            insert into technicians (id, department_code, name, title, shift, on_duty, available, note)
+                            select ?, ?, ?, ?, ?, ?, ?, ?
+                            where exists (select 1 from departments where code = ?)""",
+                    r.get("technician_id"), r.get("department_code"), r.get("name"), r.get("title"),
+                    r.get("shift"), bool(r, "on_duty", false), bool(r, "available", false), blankToNull(r, "note"),
+                    r.get("department_code")));
+        }
+    }
+
+    private void loadBase(Path dir) throws IOException {
         log.info("시드 적재 시작: {}", dir);
 
         load(dir, "airlines.csv", r -> jdbc.update(

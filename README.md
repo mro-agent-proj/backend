@@ -83,6 +83,7 @@ docker compose up -d postgres rabbitmq
 | `departments.csv` | 정비 부서 8개와 담당 ATA. 항전 AVI, 객실 CAB, 전기 ELE, 엔진 ENG, 비행 조종 FCS(ATA 27), 유압·착륙장치 HYD, 구조 STR, 기계 계통 SYS |
 | `airlines.csv` / `aircraft.csv` | 항공사 3곳, A320 계열 기체 20대 (HL7720은 운용 중지) |
 | `maintenance_history.csv` | 수리이력 1,577건 (FAA SDR 실제 결함을 한국어로 다시 쓴 목업, 경님 데이터 + ATA 27 78건) |
+| `technicians.csv` | 정비사 목업 38명 (8개 부서, 직급·근무조·출근·작업가능). 관리자 인원 현황판 전용이며 로그인 계정이 아님. 출근하지 않은 사람은 작업가능일 수 없음 (경님 데이터) |
 
 평가셋은 `data/eval/`에 두 가지가 있습니다. 자세한 내용은 [data/eval/README.md](data/eval/README.md).
 - `scenario/` 통합 평가: AI 경로 S01~S23(기대 경로·부서·근거 이력)과 접수 검증 V1~V6. `scripts/scenario_eval.py`로 실제 스택에 보내 채점합니다.
@@ -104,6 +105,7 @@ docker compose up -d postgres rabbitmq
 | `GET /assignments`, `POST /assignments/{id}/accept`·`reject` | 정비팀 | 우리 부서 배정 대기함, 수락·거절 |
 | `GET /reviews`, `POST /reviews/{id}/resolve` | 관리자 | 사람 검토 큐, 수동 배정(ASSIGN)·종결(CLOSE) |
 | `GET /stats/summary` | 관리자 | 상태별·부서별 건수, 자동 배정률, 첫 배정까지 평균 시간 |
+| `GET /staffing` | 관리자 | 인원 현황판(참고용). 전체·부서별 총원, 출근, 작업가능 인원과 명단. 배정·AI 판단에는 쓰이지 않음 |
 
 권한은 두 단계입니다. 역할이 다르면 403(`@PreAuthorize`), 역할은 맞지만 본인 것이 아니면 404(`RequestAccessPolicy`)입니다.
 
@@ -171,7 +173,8 @@ data/
 | Flyway V7 | R02 하이브리드용 SDR 임베딩 `rag.sdr_embeddings` (OpenAI text-embedding-3-large, 1024차원) |
 | Flyway V8 | AMM 의미 검색 테이블 3개(`amm_chunks`, `amm_chunk_references`, `rag.amm_embeddings`) 제거, 기술자료 임베딩을 OpenAI 1024차원으로 교체. AMM은 판단 근거가 아니라 배정 후 참고 정보 |
 | Flyway V9 | business-mcp용 AI 뷰 `agent_request_context`(접수 내용·상태·버전), `agent_run_context`(실행별 검색 범위). `mro_business_reader`는 이 뷰만 읽고, V6의 `repair_requests` 열 권한은 회수 |
-| SeedLoader | `data/seed/*.csv` (local 프로파일, users 테이블이 비어 있을 때만) |
+| Flyway V10 | 인원 현황판용 `technicians` 표 (새 표 1개, 기존 표 변경 없음). 화면 전용이라 MCP 계정 둘 다 권한 없음 (`DatabaseSchemaTest`로 확인) |
+| SeedLoader | `data/seed/*.csv` (local 프로파일, users 테이블이 비어 있을 때만). `technicians.csv`는 technicians 테이블이 비어 있으면 따로 적재해 이미 쓰던 DB에도 들어감 |
 | RAG 데이터 | 전달본 `data/rag-dump/sdr-jasc-amm_v2/` → `scripts/rag-restore.sh`. SDR 71,741건, AMM 참조 35,396건, 근거 107,137건 (v1 전달본은 V8 이후 복원 불가) |
 | 기술자료 (R04) | 전달본 `data/rag-dump/airbus-safety-first_v2/` → `scripts/tech-restore.sh`. Airbus Safety First 61편, 조각 496개, OpenAI 임베딩 496개 |
 | SDR 임베딩 (R02 하이브리드) | Flyway V7 `rag.sdr_embeddings` + 전달본 `data/rag-dump/sdr-embeddings_v1/` → `scripts/sdr-embed-restore.sh`. SDR 71,741건, OpenAI text-embedding-3-large 1024차원. 없으면 R02는 단어 검색만 함 |
