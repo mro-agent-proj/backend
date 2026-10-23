@@ -97,7 +97,7 @@ class RequestFlowTest extends IntegrationTestSupport {
         Claims rag = mcpClaims(message, "x-mro-rag-token", RAG_SECRET, "mro-rag");
         assertThat(business.get("request_id", String.class)).isEqualTo(requestId.toString());
         assertThat(business.get("tenant_id", String.class)).isEqualTo("KAL");
-        assertThat(business.get("context_version", Integer.class)).isEqualTo(1);
+        assertThat(business.get("context_version", Integer.class)).isEqualTo(2);
         assertThat(business.getSubject()).isEqualTo(reporterId("reporter@kal.test"));
         assertThat(rag.get("run_id", String.class)).isEqualTo(business.get("run_id", String.class));
         // RAG 릴리스가 없으면(복원 전) 검색 범위는 등록하지 않음
@@ -127,7 +127,7 @@ class RequestFlowTest extends IntegrationTestSupport {
                 "select *, index_ids::text as indexes, locked_filters::text as filters from rag_request_contexts where run_id = ?",
                 runId);
         assertThat(context.get("request_id")).isEqualTo(requestId.toString());
-        assertThat(context.get("context_version")).isEqualTo(1);
+        assertThat(context.get("context_version")).isEqualTo(2);
         assertThat(context.get("tenant_id")).isEqualTo("KAL");
         assertThat(context.get("subject_id")).isEqualTo(reporterId("reporter@kal.test"));
         assertThat(context.get("operator_code")).isNull();
