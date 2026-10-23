@@ -14,6 +14,7 @@ out/
 /data/rag-dump/
 /data/rag-csv/
 /data/eval/scenario/results/
+/data/eval/service/results/
 /data/eval/.faa-cache/
 
 # VS Code Java 빌드 결과물

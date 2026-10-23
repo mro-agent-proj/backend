@@ -65,6 +65,8 @@ mro:
     mock-delay: 1s
   seed:
     dir: ${SEED_DIR:data/seed}
+    # 수리이력 시드 파일 (FAA SDR 2021~2026 기반 1,600건). data/eval/service 평가셋이 이 파일의 이력 ID를 정답 근거로 씀
+    history-file: ${SEED_HISTORY_FILE:maintenance_history_v2.csv}
   mcp:
     # AI 서버가 business-mcp·rag-mcp를 부를 때 쓰는 요청별 위임 토큰. 각 MCP의 BUSINESS_JWT_SECRET·RAG_JWT_SECRET과 같아야 합니다.
     # 32바이트 이상, 서로 달라야 함. local·test 프로파일 밖에서는 값이 없으면 시작하지 않습니다.
