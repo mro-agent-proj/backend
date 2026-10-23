@@ -8,7 +8,7 @@ import unittest
 
 SCRIPTS = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(SCRIPTS))
-from scenario_eval import submit_body, summarize, summarize_by_split
+from scenario_eval import run_scenario, submit_body, summarize, summarize_by_split
 
 
 def row(expected="ASSIGNED", status="ASSIGNED", department="AVI", correct=True, trap=False):
@@ -20,6 +20,50 @@ def row(expected="ASSIGNED", status="ASSIGNED", department="AVI", correct=True, 
 
 
 class ScoringTests(unittest.TestCase):
+    def run_with_trace(self, trace_status, trace, status="ASSIGNED"):
+        class FakeApi:
+            def token(self, email):
+                return "offline-test"
+
+            def call(self, method, path, body=None, token=None):
+                if method == "POST":
+                    return 201, {"id": "test-request", "status": status, "assigned_department": "AVI"}
+                if isinstance(trace, Exception):
+                    raise trace
+                return trace_status, trace
+
+        case = dict(id="TEST", tail_number="HL-TEST", airline_code="KAL", aircraft_model="A320-TEST",
+                    symptom_text="test symptom", expected=dict(status=status, department="AVI", path="DIRECT",
+                    acceptable_departments=["AVI"], must_not_cite=["MH-TRAP"]))
+        return run_scenario(FakeApi(), case, 1)
+
+    def test_trace_failures_cannot_pass_and_remain_in_assignment_denominator(self):
+        for status, trace in [
+            (500, {"error": "unavailable"}), (200, None), (200, {}),
+            (200, {"history": [], "assessments": []}),
+            (200, {"history": [], "assessments": [{"stage": "FINAL", "output": {}}]}),
+            (200, {"history": [], "assessments": [{"stage": "FINAL", "output": {"evidence": [{}]}}]}),
+            (200, OSError("connection failed")), (200, ValueError("invalid JSON")),
+        ]:
+            with self.subTest(status=status, trace=trace):
+                result = self.run_with_trace(status, trace)
+                self.assertFalse(result["correct"])
+                self.assertTrue(result["evaluation_error"])
+                summary = summarize([result], [])
+                self.assertEqual(summary["자동 배정 정밀도 (자동 배정 중 정답)"], "0/1 (0.0%)")
+                self.assertEqual(summary["추적 조회·근거 확인 오류"], 1)
+                self.assertEqual(summary["시간 초과·실패"], 1)
+        self.assertFalse(self.run_with_trace(500, {}, status="HUMAN_REVIEW")["correct"])
+
+    def test_valid_final_checks_forbidden_history(self):
+        for evidence, correct in [([], True), ([{"ref_id": "MH-OK"}], True), ([{"ref_id": "MH-TRAP"}], False)]:
+            with self.subTest(evidence=evidence):
+                trace = {"history": [{"to_status": "ASSIGNED"}], "assessments": [
+                    {"stage": "FINAL", "output": {"evidence": evidence}}]}
+                result = self.run_with_trace(200, trace)
+                self.assertEqual(result["correct"], correct)
+                self.assertNotIn("evaluation_error", result)
+
     def test_precision_includes_expected_human_assignments_and_separates_traps(self):
         cases = [row(), row(department="ENG", correct=False), row(correct=False, trap=True),
                  row(department="ENG", correct=False, trap=True),

@@ -92,17 +92,43 @@ def run_scenario(api, case, timeout):
         time.sleep(2)
         _, body = api.call("GET", f"/requests/{rid}", token=token)
     elapsed = round(time.monotonic() - started, 1)
-    _, trace = api.call("GET", f"/requests/{rid}/trace", token=api.token(ADMIN))
+    exp = case["expected"]
+    acceptable = exp.get("acceptable_departments") or ([exp["department"]] if exp.get("department") else [])
+
+    def trace_error(message):
+        # 관측된 배정은 분모에 남기되, 확인하지 못한 근거를 통과로 취급하지 않는다.
+        return {
+            "id": case["id"], "split": case.get("split"), "group": case.get("group"), "request_id": rid,
+            "status": body["status"], "department": body.get("assigned_department"),
+            "review_reason": body.get("review_reason"), "expected_status": exp["status"],
+            "expected_department": exp["department"], "acceptable": acceptable, "expected_path": exp["path"],
+            "correct": False, "evaluation_error": True, "error": message,
+            "seconds": elapsed, "timed_out": body["status"] in IN_PROGRESS,
+        }
+
+    try:
+        trace_status, trace = api.call("GET", f"/requests/{rid}/trace", token=api.token(ADMIN))
+    except (OSError, ValueError) as exc:
+        return trace_error(f"추적 조회 실패: {type(exc).__name__}")
+    if trace_status != 200:
+        return trace_error(f"추적 조회 실패 HTTP {trace_status}")
+    if not isinstance(trace, dict) or not isinstance(trace.get("history"), list) or not isinstance(trace.get("assessments"), list):
+        return trace_error("추적 응답 형식 오류")
+    if any(not isinstance(h, dict) or "to_status" not in h for h in trace["history"]) or any(
+            not isinstance(a, dict) for a in trace["assessments"]):
+        return trace_error("추적 항목 형식 오류")
 
     statuses = [h["to_status"] for h in trace.get("history", []) if h["to_status"] != "QUEUED"]
-    final = next((a["output"] for a in reversed(trace.get("assessments", []))
-                  if a["stage"] == "FINAL" and a.get("output")), None) or {}
-    cited = [e.get("ref_id") for e in final.get("evidence", [])]
+    final = next((a.get("output") for a in reversed(trace["assessments"])
+                  if a.get("stage") == "FINAL"), None)
+    if not isinstance(final, dict) or not isinstance(final.get("evidence"), list):
+        return trace_error("FINAL 판단 또는 근거 목록 누락·형식 오류")
+    if any(not isinstance(e, dict) or not isinstance(e.get("ref_id"), str) for e in final["evidence"]):
+        return trace_error("FINAL 근거 항목 형식 오류")
+    cited = [e["ref_id"] for e in final["evidence"]]
     path = ("HUMAN_REVIEW" if body["status"] == "HUMAN_REVIEW"
             else "INVESTIGATE" if "INVESTIGATING" in statuses else "DIRECT")
 
-    exp = case["expected"]
-    acceptable = exp.get("acceptable_departments") or ([exp["department"]] if exp.get("department") else [])
     trap_hit = sorted(set(cited) & set(exp.get("must_not_cite", [])))
     if exp["status"] == "ASSIGNED":
         correct = body["status"] == "ASSIGNED" and body["assigned_department"] in acceptable and not trap_hit
@@ -164,6 +190,7 @@ def summarize(scenarios, validations):
         "경로 일치": pct(sum(r.get("path") == r.get("expected_path") for r in scenarios), len(scenarios)),
         "정답 근거 이력 인용률 (반복 결함)": pct(sum(r["evidence_cited"] for r in with_evidence), len(with_evidence)),
         "함정 이력 인용": sum(bool(r.get("trap_cited")) for r in scenarios),
+        "추적 조회·근거 확인 오류": sum(bool(r.get("evaluation_error")) for r in scenarios),
         "시간 초과·실패": sum(r.get("timed_out", False) or "error" in r for r in scenarios),
         "소요 중앙값(초)": statistics.median(done) if done else None,
         "소요 상위 5%(초)": done[math.ceil(len(done) * 0.95) - 1] if done else None,
