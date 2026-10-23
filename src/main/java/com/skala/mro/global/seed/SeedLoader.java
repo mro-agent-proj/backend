@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * local 프로파일에서 users 테이블이 비어 있으면 seed/*.csv를 적재합니다 (인터페이스 규약 4·5번 섹션).
  * technicians.csv(인원 현황판)는 technicians 테이블이 비어 있을 때 따로 적재합니다.
+ * 수리이력은 mro.seed.history-file(기본 maintenance_history_v2.csv) 하나만 적재합니다.
  * 다시 적재하려면 DB를 비우세요: docker compose down -v
  */
 @Slf4j
@@ -42,6 +43,9 @@ public class SeedLoader implements ApplicationRunner {
 
     @Value("${mro.seed.dir}")
     private String seedDir;
+
+    @Value("${mro.seed.history-file}")
+    private String historyFile;
 
     @Override
     @Transactional
@@ -83,7 +87,7 @@ public class SeedLoader implements ApplicationRunner {
                 "insert into aircraft (tail_number, msn, aircraft_model, airline_code, active) values (?, ?, ?, ?, ?)",
                 r.get("tail_number"), r.get("msn"), r.get("aircraft_model"), r.get("airline_code"),
                 bool(r, "active", true)));
-        load(dir, "maintenance_history.csv", r -> jdbc.update("""
+        load(dir, historyFile, r -> jdbc.update("""
                         insert into maintenance_history
                           (id, tail_number, reported_at, symptom_text, ata_chapter, jasc_code, action_taken,
                            department_code, closed_at)
