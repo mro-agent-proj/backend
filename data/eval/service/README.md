@@ -13,6 +13,20 @@
 - 라벨: `not_reviewed` 161 / `needs_final_review` 24 / `decided` 15. 평가 라벨과의 일치를 실제 전문가 판정과 동일시하지 않습니다.
 - `expected`, `source`, `label_check`는 평가 메타데이터입니다. 접수에는 기체번호·항공사·기종·증상 4개 필드만 보냅니다.
 
+## 저장된 실행 결과 (2026-10-23)
+
+[deliverables 평가 번들](https://github.com/mro-agent-proj/deliverables/tree/main/evaluations/2026-10-23-isolated-200)에
+실제 LLM·HTTP MCP·Docker DB로 실행한 200건의 결과·감사 기록·체크섬을 보관합니다.
+2026-10-26 게시 정리이며 새 평가가 아닙니다. 보고서와 원본 데이터셋은 이 변경으로 수정하지 않습니다.
+
+결과 재집계는 [LLM 오프라인 도구](https://github.com/mro-agent-proj/LLM/tree/main/scripts/evaluation)를 사용합니다.
+`--dataset`으로 이 폴더의 `scenarios.jsonl`을 지정하면 실행 당시 SHA256과 라벨·금지 이력을 비교합니다.
+전체 통과·자동배정 통과·LLM2 부서 일치의 분모는 번들의 `summary.json`을 기준으로 봅니다.
+시드 파일과 실제 DB 대조 기록도 번들에 포함하며, manifest만으로 DB 적재 상태를 보장하지 않습니다.
+
+200건 실행 이후 보완된 trace 조회 실패·FINAL 누락 채점 회귀 테스트와,
+실모델 200건 실행 결과를 구분합니다. 보완 후 200건을 새로 실행했다고 해석하지 않습니다.
+
 ## 실행
 
 Backend `AI_MODE=rabbit`, 실제 MCP 두 개와 AI 서버가 필요합니다. 요청이 DB에 쌓이고 모델 비용이 발생합니다. 단일 AI 소비자(prefetch=1)에서는 기본 `--workers 1`로 순차 실행합니다. 동시 접수 수를 높이면 큐 대기로 TTL/평가 시간 제한에 걸릴 수 있습니다.

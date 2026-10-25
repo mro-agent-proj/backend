@@ -101,6 +101,7 @@ docker compose up -d postgres rabbitmq
 
 평가셋은 `data/eval/`에 있습니다. 자세한 내용은 [data/eval/README.md](data/eval/README.md).
 - `service/` 통합 평가: 시나리오 200건(dev 80/test 120). `scripts/scenario_eval.py --workers 1`로 실제 스택에 보내 채점합니다.
+- 2026-10-23의 [200건 실구동 결과·감사 자료](https://github.com/mro-agent-proj/deliverables/tree/main/evaluations/2026-10-23-isolated-200)는 deliverables에 보관합니다. [데이터·채점 안내](data/eval/service/README.md#저장된-실행-결과-2026-10-23)와 함께 확인합니다.
 - `scenario/`는 접수 검증 V1~V6와 과거 S01~S23 설명을 보존합니다. 과거 실행용 JSONL은 삭제됐으며 기본 평가 대상이 아닙니다.
 - `sdr/` 단위 평가: FAA 공개 SDR 2019~2020(검색 대상과 기간이 안 겹침)으로 만든 검색(R01·R02)·LLM1 분류·LLM2 부서 결정·JASC 매핑 평가셋. `scripts/build_sdr_eval.py`로 다시 만들 수 있습니다.
 
