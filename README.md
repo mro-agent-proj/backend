@@ -1,11 +1,11 @@
 # MRO Backend (Spring Boot)
 
-현재 SDR 모델 범위 확장과 서비스 간 적용 순서는 [모델 검색 범위 계약](docs/MODEL_SCOPE.md)을 따른다.
-
 항공 정비 요청의 접수부터 배정까지 업무를 관리하는 백엔드입니다.
 인증·권한, 접수 검증, 요청 상태 관리, 배정 실행, 대시보드 API, 그리고 공유 DB와 데이터 적재를 맡습니다.
 AI 판단(LLM1~3)은 별도 AI 서버가 하고, 백엔드와 AI 서버는 RabbitMQ로 주고받습니다.
 계약은 팀 문서 "MRO Agent 팀 인터페이스 규약"을 따릅니다.
+
+> 모델 검색 범위 확장과 서비스 간 적용 순서는 [모델 검색 범위 계약](docs/MODEL_SCOPE.md)을 따릅니다.
 
 ## 전체 구성
 
@@ -21,6 +21,9 @@ AI 판단(LLM1~3)은 별도 AI 서버가 하고, 백엔드와 AI 서버는 Rabbi
 | [backend](https://github.com/mro-agent-proj/backend) | 이 레포. 업무 상태·배정·DB의 주인 |
 | [LLM](https://github.com/mro-agent-proj/LLM) | AI 서버 (FastAPI + LangGraph) |
 | [agent](https://github.com/mro-agent-proj/agent) | MCP 서버 2개 (읽기 전용) |
+| [integration](https://github.com/mro-agent-proj/integration) | 서비스 4개의 검증된 커밋 조합, 로컬 실행·평가 스크립트 (봇이 자동 갱신) |
+| [infra](https://github.com/mro-agent-proj/infra) | AWS 인프라(Terraform)와 운영 배포. 배포는 여기서만 합니다 |
+| [deliverables](https://github.com/mro-agent-proj/deliverables) | 최종 결과보고서, 아키텍처 다이어그램 등 산출물 |
 
 요청 하나의 흐름:
 1. 신고자가 접수하면 백엔드가 기체·기종·항공사를 검증하고 `QUEUED`로 저장합니다.
@@ -28,6 +31,13 @@ AI 판단(LLM1~3)은 별도 AI 서버가 하고, 백엔드와 AI 서버는 Rabbi
 3. AI 서버가 단계 이벤트(`CLASSIFYING` → `INVESTIGATING` → `REVIEWING`)와 최종 판단을 보냅니다.
 4. 백엔드가 근거·부서를 검증해 배정(`ASSIGNED`)하거나 사람 검토(`HUMAN_REVIEW`)로 보냅니다.
 5. 정비팀이 수락(`ACCEPTED`)하거나 거절하면 관리자가 수동 배정·종결합니다.
+
+## 변경과 배포
+
+1. 이 레포에 PR을 올립니다. main은 PR과 CI 통과가 필수입니다.
+2. main에 병합되면 Release 워크플로가 이 커밋의 이미지를 ECR에(태그 = 커밋 SHA) 올리고 [integration](https://github.com/mro-agent-proj/integration)에 알립니다.
+3. integration이 네 서비스 main을 모아 통합 검증을 통과하면 `verified-*` 태그를 붙입니다.
+4. [infra](https://github.com/mro-agent-proj/infra)에 release PR이 올라오고, 병합·승인하면 운영에 배포됩니다.
 
 ## 실행
 
@@ -186,7 +196,7 @@ data/
 | 기술자료 (R04) | 전달본 `data/rag-dump/airbus-safety-first_v2/` → `scripts/tech-restore.sh`. Airbus Safety First 61편, 조각 496개, OpenAI 임베딩 496개 |
 | SDR 임베딩 (R02 하이브리드) | Flyway V7 `rag.sdr_embeddings` + 전달본 `data/rag-dump/sdr-embeddings_v1/` → `scripts/sdr-embed-restore.sh`. SDR 71,741건, OpenAI text-embedding-3-large 1024차원. 없으면 R02는 단어 검색만 함 |
 
-데이터 전달본(RAG 약 124MB, 기술자료 약 1MB)은 git에 없습니다. [통합 레포](https://github.com/mro-agent-proj/mro-agent-integration)의 `scripts/fetch-data.sh`로 받으면 `data/rag-dump/`(복원용 덤프)와 `data/rag-csv/`(확인용 CSV)에 풀립니다. `scripts/restore-data.sh`가 둘 다 복원하며(compose에서는 `rag-restore` 서비스가 자동 실행), 전달본이 없으면 경고만 남기고 건너뜁니다.
+데이터 전달본(RAG 약 124MB, 기술자료 약 1MB)은 git에 없습니다. [통합 레포](https://github.com/mro-agent-proj/integration)의 `scripts/fetch-data.sh`로 받으면 `data/rag-dump/`(복원용 덤프)와 `data/rag-csv/`(확인용 CSV)에 풀립니다. `scripts/restore-data.sh`가 둘 다 복원하며(compose에서는 `rag-restore` 서비스가 자동 실행), 전달본이 없으면 경고만 남기고 건너뜁니다.
 
 - 복원 전 체크섬·스키마 호환·Flyway 적용 여부를 확인하고, 테이블이 모두 비어 있을 때만 복원한 뒤 `verify.sql`로 검증합니다.
 - 이미 같은 데이터가 있으면 건너뛰고, 일부만 차 있으면 아무것도 지우지 않고 중단합니다.
