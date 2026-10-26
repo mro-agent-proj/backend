@@ -46,7 +46,7 @@ docker compose up -d postgres rabbitmq
 | http://localhost:8080/actuator/health | 헬스 (`ragData`가 `UNKNOWN`이면 RAG 복원 전) |
 | http://localhost:8080/actuator/prometheus | Prometheus 지표(인증 없음): JVM·HTTP·DB 풀, 요청 상태 전이 `mro_request_transitions_total{to,reason,actor}` |
 
-기존 DB·큐 볼륨은 보존합니다. 평가 데이터 교체는 별도 평가 환경에서 수행하고, 공유 DB 갱신은 Backend 담당 절차로 처리합니다.
+기존 DB·큐 볼륨은 지우지 않습니다.
 
 ## 계정과 시드 데이터
 
@@ -73,8 +73,8 @@ docker compose up -d postgres rabbitmq
 
 | 폴더 | 내용 |
 | --- | --- |
-| `service/` | 통합 평가 200건(dev 80/test 120). `scripts/scenario_eval.py --workers 1`로 실제 스택에 보내 채점. 2026-10-23 [실구동 결과](https://github.com/mro-agent-proj/deliverables/tree/main/evaluations/2026-10-23-isolated-200)는 deliverables에 보관 |
-| `scenario/` | 접수 검증 V1~V6, 과거 S01~S23 설명(기본 평가 대상 아님) |
+| `service/` | 통합 평가 200건(dev 80/test 120). `scripts/scenario_eval.py --workers 1`로 실제 스택에 보내 채점. [실구동 결과](https://github.com/mro-agent-proj/deliverables/tree/main/evaluations/2026-10-23-isolated-200)는 deliverables에 보관 |
+| `scenario/` | 접수 검증 V1~V6 |
 | `sdr/` | FAA 공개 SDR 2019~2020 기반 단위 평가: 검색(R01·R02)·LLM1 분류·LLM2 부서·JASC 매핑. `scripts/build_sdr_eval.py`로 재생성 |
 
 ## 주요 API
@@ -139,7 +139,7 @@ data/
 ├── seed/                       git   업무 시드 CSV (항공사·기체·부서·계정·수리이력)
 ├── eval/                       git   평가셋
 │   ├── service/                      현재 통합 평가 200건 + manifest (결과 results/는 git 제외)
-│   ├── scenario/                     접수 검증 6건 + 과거 23건 설명
+│   ├── scenario/                     접수 검증 6건
 │   └── sdr/                          단위 평가: FAA SDR 기반 검색·분류·부서·매핑
 ├── rag-dump/                   제외  DB 복원용 덤프 (통합 레포 Release로 받음)
 │   ├── sdr-jasc-amm_v2/              SDR·JASC·AMM 참조·근거 (57MB, V8 이후 6개 테이블)
@@ -176,7 +176,7 @@ data/
 - 이미 같은 데이터가 있으면 건너뛰고, 일부만 차 있으면 아무것도 지우지 않고 중단합니다.
 - 기술자료 복원 마지막에 문서별 담당 부서를 현재 부서 매핑으로 다시 계산합니다(`scripts/lib/tech-departments.sql`). 부서가 바뀌면 `scripts/tech-restore.sh`만 다시 실행하면 됩니다.
 
-조회 전용 계정 비밀번호는 Postgres 볼륨을 처음 만들 때 `docker/postgres/init`이 설정합니다(`MRO_RAG_READER_PASSWORD`, `MRO_BUSINESS_READER_PASSWORD`, 기본값은 로컬 전용). 기존 볼륨에는 초기화 스크립트가 재실행되지 않습니다. 계정·권한 보완은 Backend 담당자가 기존 데이터를 보존하는 절차로 수행해야 하며, 계정 생성만을 위해 볼륨을 삭제하지 않습니다.
+조회 전용 계정 비밀번호는 Postgres 볼륨을 처음 만들 때 `docker/postgres/init`이 설정합니다(`MRO_RAG_READER_PASSWORD`, `MRO_BUSINESS_READER_PASSWORD`, 기본값은 로컬 전용). 기존 볼륨에는 다시 실행되지 않습니다.
 
 ## 테스트
 
