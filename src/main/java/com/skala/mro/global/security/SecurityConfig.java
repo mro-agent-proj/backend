@@ -49,7 +49,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/signup").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/airlines").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
-                                "/actuator/health", "/error").permitAll()
+                                "/actuator/health", "/actuator/prometheus", "/error").permitAll()
                         .requestMatchers("/api/**").hasAnyRole("REPORTER", "MAINTENANCE", "ADMIN")
                         .anyRequest().denyAll())
                 .exceptionHandling(e -> e

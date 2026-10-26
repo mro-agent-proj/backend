@@ -43,11 +43,17 @@ management:
   endpoints:
     web:
       exposure:
-        include: health
+        # prometheus: 지표 수집용(인증 없음). 요청 내용·개인정보는 담지 않으며, 운영에서는 게이트웨이에서 외부 접근을 막습니다.
+        include: health,prometheus
   endpoint:
     health:
       # 항목별 상태(db, rabbit, ragData)만 공개하고 세부 정보는 숨깁니다.
       show-components: always
+  metrics:
+    distribution:
+      # Grafana에서 API 지연 p95를 계산하도록 히스토그램 버킷을 내보냅니다.
+      percentiles-histogram:
+        http.server.requests: true
 
 mro:
   jwt:

@@ -14,6 +14,7 @@ import com.skala.mro.domain.review.entity.HumanReview;
 import com.skala.mro.domain.review.repository.HumanReviewRepository;
 import com.skala.mro.global.error.ApiException;
 import com.skala.mro.global.error.ErrorCode;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,10 +33,12 @@ public class RequestWorkflow {
     private final AssignmentRepository assignmentRepository;
     private final HumanReviewRepository reviewRepository;
     private final DepartmentRepository departmentRepository;
+    private final MeterRegistry meterRegistry;
 
     public RepairRequest submit(RepairRequest request, Actor actor) {
         RepairRequest saved = requestRepository.save(request);
         historyRepository.save(new RequestStatusHistory(saved.getId(), null, saved.getStatus(), null, actor, "접수"));
+        count(saved.getStatus(), null, actor);
         return saved;
     }
 
@@ -72,5 +75,14 @@ public class RequestWorkflow {
         request.changeStatus(to, reason);
         requestRepository.save(request);
         historyRepository.save(new RequestStatusHistory(request.getId(), from, to, reason, actor, note));
+        count(to, reason, actor);
+    }
+
+    /** 상태 전이 수를 Prometheus 지표(mro_request_transitions_total)로 남깁니다. */
+    private void count(RequestStatus to, ReviewReason reason, Actor actor) {
+        meterRegistry.counter("mro.request.transitions",
+                "to", to.name(),
+                "reason", reason == null ? "NONE" : reason.name(),
+                "actor", actor.type().name()).increment();
     }
 }
