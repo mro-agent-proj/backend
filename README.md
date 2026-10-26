@@ -76,6 +76,7 @@ docker compose up -d postgres rabbitmq
 - Swagger: http://localhost:8080/swagger-ui.html
 - RabbitMQ 관리 UI: http://localhost:15672 (`mro` / `mro`, DLQ 확인·재전송)
 - 헬스: http://localhost:8080/actuator/health (`ragData`가 `UNKNOWN`이면 RAG 복원 전)
+- 지표: http://localhost:8080/actuator/prometheus (인증 없음). JVM·HTTP·DB 풀 기본 지표와 요청 상태 전이 `mro_request_transitions_total{to,reason,actor}`. Grafana 대시보드는 integration 레포 `monitoring/`
 - 기존 DB·큐 볼륨은 보존합니다. 평가 데이터 교체는 별도 평가 환경에서 수행하고, 공유 DB 갱신은 Backend 담당 절차로 처리합니다.
 
 ## 계정과 시드 데이터
