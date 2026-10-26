@@ -1,13 +1,7 @@
 # MRO Backend (Spring Boot)
 
-항공 정비 요청의 접수부터 배정까지 업무를 관리하는 백엔드입니다.
-인증·권한, 접수 검증, 요청 상태 관리, 배정 실행, 대시보드 API, 그리고 공유 DB와 데이터 적재를 맡습니다.
-AI 판단(LLM1~3)은 별도 AI 서버가 하고, 백엔드와 AI 서버는 RabbitMQ로 주고받습니다.
-계약은 팀 문서 "MRO Agent 팀 인터페이스 규약"을 따릅니다.
-
-> 모델 검색 범위 확장과 서비스 간 적용 순서는 [모델 검색 범위 계약](docs/MODEL_SCOPE.md)을 따릅니다.
-
-## 전체 구성
+항공 정비 요청의 접수부터 배정까지를 관리하는 백엔드입니다. 인증·권한, 접수 검증, 요청 상태 관리, 배정 실행, 대시보드 API, 공유 DB와 데이터 적재를 맡습니다.
+AI 판단(LLM1~3)은 별도 AI 서버가 하고, 둘은 RabbitMQ로 주고받습니다. 전체 구성·통합 실행·배포 흐름은 [integration](https://github.com/mro-agent-proj/integration)을 참고하세요.
 
 ```
 [dashboard] ──HTTP──▶ [backend] ──run.requested (+MCP 토큰 2개)──▶ [ai: LLM1·2·3] ──MCP──▶ [business-mcp · rag-mcp]
@@ -15,29 +9,12 @@ AI 판단(LLM1~3)은 별도 AI 서버가 하고, 백엔드와 AI 서버는 Rabbi
                          └──────────── Postgres (업무 + RAG + 기술자료) ◀── 조회 전용 계정 ────┘
 ```
 
-| 레포 | 역할 |
-| --- | --- |
-| [dashboard](https://github.com/mro-agent-proj/dashboard) | 신고자·정비팀·관리자 화면 |
-| [backend](https://github.com/mro-agent-proj/backend) | 이 레포. 업무 상태·배정·DB의 주인 |
-| [LLM](https://github.com/mro-agent-proj/LLM) | AI 서버 (FastAPI + LangGraph) |
-| [agent](https://github.com/mro-agent-proj/agent) | MCP 서버 2개 (읽기 전용) |
-| [integration](https://github.com/mro-agent-proj/integration) | 서비스 4개의 검증된 커밋 조합, 로컬 실행·평가 스크립트 (봇이 자동 갱신) |
-| [infra](https://github.com/mro-agent-proj/infra) | AWS 인프라(Terraform)와 운영 배포. 배포는 여기서만 합니다 |
-| [deliverables](https://github.com/mro-agent-proj/deliverables) | 최종 결과보고서, 아키텍처 다이어그램 등 산출물 |
-
 요청 하나의 흐름:
-1. 신고자가 접수하면 백엔드가 기체·기종·항공사를 검증하고 `QUEUED`로 저장합니다.
-2. 커밋 후 실행 요청을 RabbitMQ에 발행합니다. 이때 검색 범위를 등록하고 MCP 토큰 2개를 헤더에 붙입니다.
+1. 신고자가 접수하면 기체·기종·항공사를 검증하고 `QUEUED`로 저장합니다.
+2. 커밋 후 검색 범위를 등록하고 MCP 토큰 2개를 붙여 실행 요청을 RabbitMQ에 발행합니다.
 3. AI 서버가 단계 이벤트(`CLASSIFYING` → `INVESTIGATING` → `REVIEWING`)와 최종 판단을 보냅니다.
-4. 백엔드가 근거·부서를 검증해 배정(`ASSIGNED`)하거나 사람 검토(`HUMAN_REVIEW`)로 보냅니다.
+4. 근거·부서를 다시 검증해 배정(`ASSIGNED`)하거나 사람 검토(`HUMAN_REVIEW`)로 보냅니다.
 5. 정비팀이 수락(`ACCEPTED`)하거나 거절하면 관리자가 수동 배정·종결합니다.
-
-## 변경과 배포
-
-1. 이 레포에 PR을 올립니다. main은 PR과 CI 통과가 필수입니다.
-2. main에 병합되면 Release 워크플로가 이 커밋의 이미지를 ECR에(태그 = 커밋 SHA) 올리고 [integration](https://github.com/mro-agent-proj/integration)에 알립니다.
-3. integration이 네 서비스 main을 모아 통합 검증을 통과하면 `verified-*` 태그를 붙입니다.
-4. [infra](https://github.com/mro-agent-proj/infra)에 release PR이 올라오고, 병합·승인하면 운영에 배포됩니다.
 
 ## 실행
 
@@ -52,18 +29,7 @@ docker compose logs -f backend
 
 ### 실제 AI까지 전체
 
-```bash
-# 1) backend (이 레포)
-AI_MODE=rabbit docker compose up -d --build
-# 2) agent 레포: .env.mcp를 채운 뒤 MCP 두 개 (같은 Docker 네트워크 backend_default에 붙음)
-docker compose --env-file .env.mcp -f compose.mcp.yaml up -d --build
-# 3) LLM 레포: .env에 LLM_API_KEY 등을 채운 뒤 AI 서버
-docker compose up -d --build
-# 4) dashboard 레포
-pnpm dev
-```
-
-`AI_MODE=rabbit`은 실행할 때마다 지정해야 합니다. 그냥 `docker compose up`을 하면 mock으로 돌아갑니다. mock과 실제 AI를 동시에 켜지 마세요(같은 큐를 나눠 가져갑니다).
+integration 레포의 `./scripts/up.sh`가 backend(`AI_MODE=rabbit`) → MCP 2개 → AI 서버를 순서대로 띄웁니다. 이 레포만 직접 띄울 때는 `AI_MODE=rabbit docker compose up -d --build`처럼 매번 지정해야 하며, 빼면 mock으로 돌아갑니다. mock과 실제 AI를 동시에 켜지 마세요(같은 큐를 나눠 가져갑니다).
 
 ### 코드 수정하며 개발
 
@@ -73,11 +39,14 @@ docker compose up -d postgres rabbitmq
 ./scripts/restore-data.sh        # (처음 한 번) RAG·기술자료 복원, 약 20초
 ```
 
-- Swagger: http://localhost:8080/swagger-ui.html
-- RabbitMQ 관리 UI: http://localhost:15672 (`mro` / `mro`, DLQ 확인·재전송)
-- 헬스: http://localhost:8080/actuator/health (`ragData`가 `UNKNOWN`이면 RAG 복원 전)
-- 지표: http://localhost:8080/actuator/prometheus (인증 없음). JVM·HTTP·DB 풀 기본 지표와 요청 상태 전이 `mro_request_transitions_total{to,reason,actor}`. Grafana 대시보드는 integration 레포 `monitoring/`
-- 기존 DB·큐 볼륨은 보존합니다. 평가 데이터 교체는 별도 평가 환경에서 수행하고, 공유 DB 갱신은 Backend 담당 절차로 처리합니다.
+| 주소 | 용도 |
+| --- | --- |
+| http://localhost:8080/swagger-ui.html | Swagger |
+| http://localhost:15672 | RabbitMQ 관리 UI (`mro` / `mro`, DLQ 확인·재전송) |
+| http://localhost:8080/actuator/health | 헬스 (`ragData`가 `UNKNOWN`이면 RAG 복원 전) |
+| http://localhost:8080/actuator/prometheus | Prometheus 지표(인증 없음): JVM·HTTP·DB 풀, 요청 상태 전이 `mro_request_transitions_total{to,reason,actor}` |
+
+기존 DB·큐 볼륨은 보존합니다. 평가 데이터 교체는 별도 평가 환경에서 수행하고, 공유 DB 갱신은 Backend 담당 절차로 처리합니다.
 
 ## 계정과 시드 데이터
 
@@ -96,17 +65,17 @@ docker compose up -d postgres rabbitmq
 | `departments.csv` | 정비 부서 8개와 담당 ATA. 항전 AVI, 객실 CAB, 전기 ELE, 엔진 ENG, 비행 조종 FCS(ATA 27), 유압·착륙장치 HYD, 구조 STR, 기계 계통 SYS |
 | `airlines.csv` / `aircraft.csv` | 항공사 3곳, A320 계열 기체 20대 (HL7720은 운용 중지) |
 | `maintenance_history_v2.csv` | 수리이력 1,600건 (SDR 기반 목업, 서비스 평가셋과 함께 버전 관리) |
-| `technicians.csv` | 정비사 목업 38명 (8개 부서, 직급·근무조·출근·작업가능). 관리자 인원 현황판 전용이며 로그인 계정이 아님. 출근하지 않은 사람은 작업가능일 수 없음 (경님 데이터) |
+| `technicians.csv` | 정비사 목업 38명 (8개 부서, 직급·근무조·출근·작업가능). 관리자 인원 현황판 전용이며 로그인 계정이 아님. 출근하지 않은 사람은 작업가능일 수 없음 |
 
 `SeedLoader`는 users가 이미 있으면 업무 시드를 다시 넣지 않습니다. CSV를 교체하거나 컨테이너를 재빌드해도 기존 이력은 자동 갱신되지 않습니다. 평가 전 DB의 이력 버전을 확인하고, 별도 빈 평가 DB의 최초 적재 또는 Backend 담당자의 갱신 절차를 사용하세요. 실행 설정 `mro.seed.history-file`의 기본값은 `maintenance_history_v2.csv`입니다.
 
-평가셋은 `data/eval/`에 있습니다. 자세한 내용은 [data/eval/README.md](data/eval/README.md).
-- `service/` 통합 평가: 시나리오 200건(dev 80/test 120). `scripts/scenario_eval.py --workers 1`로 실제 스택에 보내 채점합니다.
-- 2026-10-23의 [200건 실구동 결과·감사 자료](https://github.com/mro-agent-proj/deliverables/tree/main/evaluations/2026-10-23-isolated-200)는 deliverables에 보관합니다. [데이터·채점 안내](data/eval/service/README.md#저장된-실행-결과-2026-10-23)와 함께 확인합니다.
-- `scenario/`는 접수 검증 V1~V6와 과거 S01~S23 설명을 보존합니다. 과거 실행용 JSONL은 삭제됐으며 기본 평가 대상이 아닙니다.
-- `sdr/` 단위 평가: FAA 공개 SDR 2019~2020(검색 대상과 기간이 안 겹침)으로 만든 검색(R01·R02)·LLM1 분류·LLM2 부서 결정·JASC 매핑 평가셋. `scripts/build_sdr_eval.py`로 다시 만들 수 있습니다.
+평가셋은 `data/eval/`에 있습니다([data/eval/README.md](data/eval/README.md)).
 
-계정 시드는 임시 데이터이며 주영님 데이터로 교체 예정입니다.
+| 폴더 | 내용 |
+| --- | --- |
+| `service/` | 통합 평가 200건(dev 80/test 120). `scripts/scenario_eval.py --workers 1`로 실제 스택에 보내 채점. 2026-10-23 [실구동 결과](https://github.com/mro-agent-proj/deliverables/tree/main/evaluations/2026-10-23-isolated-200)는 deliverables에 보관 |
+| `scenario/` | 접수 검증 V1~V6, 과거 S01~S23 설명(기본 평가 대상 아님) |
+| `sdr/` | FAA 공개 SDR 2019~2020 기반 단위 평가: 검색(R01·R02)·LLM1 분류·LLM2 부서·JASC 매핑. `scripts/build_sdr_eval.py`로 재생성 |
 
 ## 주요 API
 
@@ -181,18 +150,21 @@ data/
     └── db-tables/                    RAG 테이블별 CSV (gzip)
 ```
 
-| 단계 | 내용 |
+| Flyway | 내용 |
 | --- | --- |
-| Flyway V1·V2 | 업무 테이블 (요청·배정·검토·기체·수리이력 등) |
-| Flyway V3 | RAG 테이블 10개 (agent 레포 제공 SQL 그대로) |
-| Flyway V4 | 조회 전용 계정 권한: `mro_reader`(rag-mcp, RAG 테이블), `mro_business_reader`(business-mcp, 기체·수리이력·부서) |
-| Flyway V5 | R04 기술자료 테이블 3개 (경님 전달본 SQL 그대로) |
-| Flyway V6 | `mro_business_reader`에 `repair_requests` 확인용 열 8개 (V9에서 뷰로 대체) |
-| Flyway V7 | R02 하이브리드용 SDR 임베딩 `rag.sdr_embeddings` (OpenAI text-embedding-3-large, 1024차원) |
-| Flyway V8 | AMM 의미 검색 테이블 3개(`amm_chunks`, `amm_chunk_references`, `rag.amm_embeddings`) 제거, 기술자료 임베딩을 OpenAI 1024차원으로 교체. AMM은 판단 근거가 아니라 배정 후 참고 정보 |
-| Flyway V9 | business-mcp용 AI 뷰 `agent_request_context`(접수 내용·상태·버전), `agent_run_context`(실행별 검색 범위). `mro_business_reader`는 이 뷰만 읽고, V6의 `repair_requests` 열 권한은 회수 |
-| Flyway V10 | 인원 현황판용 `technicians` 표 (새 표 1개, 기존 표 변경 없음). 화면 전용이라 MCP 계정 둘 다 권한 없음 (`DatabaseSchemaTest`로 확인) |
-| Flyway V11 | 실행별 모델 허용 목록·검색 범위 정책. 상세 계약은 `docs/MODEL_SCOPE.md` |
+| V1·V2 | 업무 테이블 (요청·배정·검토·기체·수리이력 등) |
+| V3 | RAG 테이블 10개 (agent 레포 제공 SQL 그대로) |
+| V4 | 조회 전용 계정 권한: `mro_reader`(rag-mcp, RAG 테이블), `mro_business_reader`(business-mcp, 기체·수리이력·부서) |
+| V5 | R04 기술자료 테이블 3개 (전달본 SQL 그대로) |
+| V6 | `mro_business_reader`에 `repair_requests` 확인용 열 8개 (V9에서 뷰로 대체) |
+| V7 | R02 하이브리드용 SDR 임베딩 `rag.sdr_embeddings` (OpenAI text-embedding-3-large, 1024차원) |
+| V8 | AMM 의미 검색 테이블 3개(`amm_chunks`, `amm_chunk_references`, `rag.amm_embeddings`) 제거, 기술자료 임베딩을 OpenAI 1024차원으로 교체. AMM은 판단 근거가 아니라 배정 후 참고 정보 |
+| V9 | business-mcp용 AI 뷰 `agent_request_context`(접수 내용·상태·버전), `agent_run_context`(실행별 검색 범위). `mro_business_reader`는 이 뷰만 읽고, V6의 `repair_requests` 열 권한은 회수 |
+| V10 | 인원 현황판용 `technicians` 표 (새 표 1개, 기존 표 변경 없음). 화면 전용이라 MCP 계정 둘 다 권한 없음 (`DatabaseSchemaTest`로 확인) |
+| V11 | 실행별 모델 허용 목록·검색 범위 정책. 상세 계약은 `docs/MODEL_SCOPE.md` |
+
+| 적재 | 내용 |
+| --- | --- |
 | SeedLoader | `data/seed/*.csv` (local 프로파일, users 테이블이 비어 있을 때만). `technicians.csv`는 technicians 테이블이 비어 있으면 따로 적재해 이미 쓰던 DB에도 들어감 |
 | RAG 데이터 | 전달본 `data/rag-dump/sdr-jasc-amm_v2/` → `scripts/rag-restore.sh`. SDR 71,741건, AMM 참조 35,396건, 근거 107,137건 (v1 전달본은 V8 이후 복원 불가) |
 | 기술자료 (R04) | 전달본 `data/rag-dump/airbus-safety-first_v2/` → `scripts/tech-restore.sh`. Airbus Safety First 61편, 조각 496개, OpenAI 임베딩 496개 |
@@ -231,12 +203,14 @@ com.skala.mro
 │   ├── agent       RabbitMQ 발행·소비, MCP 위임, DLQ 처리, 이벤트 반영, 시간 초과 감시, 가짜 AI
 │   ├── assignment  정비팀 대기함, 수락·거절
 │   ├── review      사람 검토 큐, 관리자 수동 배정·종결
+│   ├── staffing    관리자 인원 현황판 (참고용)
 │   └── stats       관리자 요약 통계
 └── global
     ├── config      OpenAPI
     ├── security    JWT 필터, SecurityConfig, AuthUser
     ├── error       ErrorCode, ApiException, 공통 에러 응답
     ├── common      PageResponse
+    ├── health      RAG 데이터 헬스 지표
     └── seed        local 프로파일 CSV 적재
 ```
 
@@ -253,3 +227,8 @@ com.skala.mro
 - 근거의 존재·허용 모델 범위·버전 등은 Backend가 검증합니다. 증상과 근거의 의미적 관련성은 AI 서버 쪽 검토에 맡깁니다.
 - 검색 범위는 `docs/MODEL_SCOPE.md`의 시연 정책(Backend 모델 허용 목록)입니다. 항공사 × 기종으로 고정하려면 우리 항공사와 SDR 운항사 매핑을 정한 뒤 `operator_code`를 채우면 됩니다.
 - 로그인·가입 API에 시도 횟수 제한이 없습니다(Redis 도입 시 우선 과제).
+
+## 문서
+
+- [모델 검색 범위 계약](docs/MODEL_SCOPE.md): 검색 범위 확장과 서비스 간 적용 순서
+- [데이터 폴더 안내](data/README.md), [평가셋 안내](data/eval/README.md)
